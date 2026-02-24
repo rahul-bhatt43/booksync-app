@@ -5,12 +5,24 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import "../global.css";
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { AudioProvider } from '@/contexts/AudioContext';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  Inter_800ExtraBold,
+} from '@expo-google-fonts/inter';
+import { useRouter, useSegments } from 'expo-router';
+
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from 'expo-router';
 
 export const unstable_settings = {
@@ -25,6 +37,11 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
+    'Inter-Regular': Inter_400Regular,
+    'Inter-Medium': Inter_500Medium,
+    'Inter-SemiBold': Inter_600SemiBold,
+    'Inter-Bold': Inter_700Bold,
+    'Inter-ExtraBold': Inter_800ExtraBold,
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -42,16 +59,41 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <AuthProvider>
+      <AudioProvider>
+        <RootLayoutNav />
+      </AudioProvider>
+    </AuthProvider>
+  );
 }
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const { user, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (!user && !inAuthGroup) {
+      // Redirect to the welcome screen if the user is not authenticated
+      router.replace('/(auth)/welcome');
+    } else if (user && inAuthGroup) {
+      // Redirect away from the sign-in page if the user is signed in
+      router.replace('/(tabs)');
+    }
+  }, [user, isLoading, segments]);
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="player/[id]" options={{ presentation: 'fullScreenModal', headerShown: false, animation: 'ios_from_left' }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>

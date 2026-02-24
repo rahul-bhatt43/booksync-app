@@ -1,59 +1,74 @@
+import MiniPlayer from '@/components/MiniPlayer';
+import { useAudio } from '@/contexts/AudioContext';
+import { Tabs } from 'expo-router';
+import { Compass, Home, Library, User } from 'lucide-react-native';
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import { Platform, View } from 'react-native';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { currentTrack } = useAudio();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
+    <View className="flex-1">
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: '#09090b', // zinc-950
+            borderTopWidth: 1,
+            borderTopColor: '#27272a', // zinc-800
+            height: Platform.OS === 'ios' ? 88 : 70,
+            paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+            paddingTop: 12,
+          },
+          tabBarActiveTintColor: '#f59e0b', // amber-500
+          tabBarInactiveTintColor: '#a1a1aa', // zinc-400
+          tabBarLabelStyle: {
+            fontFamily: 'Inter-Medium',
+            fontSize: 12,
+            marginTop: 4,
+          },
+        }}>
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+            tabBarIcon: ({ color, focused }) => (
+              <Home color={color} size={24} strokeWidth={focused ? 2.5 : 2} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="explore"
+          options={{
+            title: 'Explore',
+            tabBarIcon: ({ color, focused }) => (
+              <Compass color={color} size={24} strokeWidth={focused ? 2.5 : 2} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="library"
+          options={{
+            title: 'Library',
+            tabBarIcon: ({ color, focused }) => (
+              <Library color={color} size={24} strokeWidth={focused ? 2.5 : 2} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: 'Profile',
+            tabBarIcon: ({ color, focused }) => (
+              <User color={color} size={24} strokeWidth={focused ? 2.5 : 2} />
+            ),
+          }}
+        />
+      </Tabs>
+
+      {/* Conditionally render MiniPlayer */}
+      {currentTrack && <MiniPlayer />}
+    </View>
   );
 }
