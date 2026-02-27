@@ -4,8 +4,8 @@ import SectionHeader from '@/components/SectionHeader';
 import Skeleton from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
 import { Search as SearchIcon, X } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,48 +16,57 @@ export default function ExploreScreen() {
     const [categories, setCategories] = useState<{ _id: string, name: string }[]>([]);
     const [audiobooks, setAudiobooks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
-    // Fetch categories on mount
+    const fetchCategories = async () => {
+        try {
+            const response = await apiClient.get('/categories');
+            setCategories(response.data.data);
+        } catch (error) {
+            console.error('Error fetching categories', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await apiClient.get('/categories');
-                setCategories(response.data.data);
-            } catch (error) {
-                console.error('Error fetching categories', error);
-            }
-        };
         fetchCategories();
     }, []);
 
-    // Fetch audiobooks when search query or selected genre changes
-    useEffect(() => {
-        const fetchAudiobooks = async () => {
-            setLoading(true);
-            try {
-                let url = '/audiobooks';
-                if (searchQuery) {
-                    url = `/feed/search?q=${encodeURIComponent(searchQuery)}`;
-                } else if (selectedGenre) {
-                    url = `/audiobooks?categoryId=${selectedGenre}`;
-                }
-
-                const response = await apiClient.get(url);
-                // Search API returns { audiobooks: [...] } inside data, list API returns direct array inside data
-                const data = response.data.data;
-                setAudiobooks(Array.isArray(data) ? data : data.audiobooks || []);
-            } catch (error) {
-                console.error('Error fetching audiobooks', error);
-            } finally {
-                setLoading(false);
+    const fetchAudiobooks = async () => {
+        setLoading(true);
+        try {
+            let url = '/audiobooks';
+            if (searchQuery) {
+                url = `/feed/search?q=${encodeURIComponent(searchQuery)}`;
+            } else if (selectedGenre) {
+                url = `/audiobooks?categoryId=${selectedGenre}`;
             }
-        };
 
+            const response = await apiClient.get(url);
+            // Search API returns { audiobooks: [...] } inside data, list API returns direct array inside data
+            const data = response.data.data;
+            setAudiobooks(Array.isArray(data) ? data : data.audiobooks || []);
+        } catch (error) {
+            console.error('Error fetching audiobooks', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         const timer = setTimeout(() => {
             fetchAudiobooks();
         }, 500); // debounce search
 
         return () => clearTimeout(timer);
+    }, [searchQuery, selectedGenre]);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await Promise.all([
+            fetchCategories(),
+            fetchAudiobooks()
+        ]);
+        setRefreshing(false);
     }, [searchQuery, selectedGenre]);
 
     const handleBookPress = (book: any) => {
@@ -97,6 +106,9 @@ export default function ExploreScreen() {
                 className="flex-1"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 40 }}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
+                }
             >
                 {/* Categories / Genres */}
                 <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="mb-8 mt-2">

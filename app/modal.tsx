@@ -5,8 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Send, Trash2 } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 
 export default function ModalScreen() {
   const { bookId } = useLocalSearchParams();
@@ -15,6 +15,7 @@ export default function ModalScreen() {
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!bookId) return;
@@ -33,6 +34,12 @@ export default function ModalScreen() {
       setLoading(false);
     }
   };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchComments();
+    setRefreshing(false);
+  }, [bookId]);
 
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
@@ -66,7 +73,10 @@ export default function ModalScreen() {
       </View>
 
       {loading ? (
-        <ScrollView contentContainerStyle={styles.listContainer}>
+        <ScrollView
+          contentContainerStyle={styles.listContainer}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />}
+        >
           {[...Array(5)].map((_, i) => (
             <View key={i} style={styles.commentCard} className="bg-zinc-100 dark:bg-zinc-900 border border-transparent dark:border-zinc-800">
               <View style={styles.commentHeader}>
@@ -80,7 +90,10 @@ export default function ModalScreen() {
           ))}
         </ScrollView>
       ) : (
-        <ScrollView contentContainerStyle={styles.listContainer}>
+        <ScrollView
+          contentContainerStyle={styles.listContainer}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />}
+        >
           {comments.length === 0 ? (
             <Text style={styles.emptyText}>No comments yet. Be the first to share your thoughts!</Text>
           ) : (

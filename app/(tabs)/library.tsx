@@ -3,8 +3,8 @@ import AudiobookCard, { Audiobook } from '@/components/AudiobookCard';
 import Skeleton from '@/components/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -14,25 +14,31 @@ export default function LibraryScreen() {
     const [activeTab, setActiveTab] = useState<'Listening' | 'Finished' | 'Downloaded'>('Listening');
     const [history, setHistory] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     const tabs = ['Listening', 'Finished', 'Downloaded'] as const;
 
-    useEffect(() => {
-        const fetchHistory = async () => {
-            if (!user) return;
-            try {
-                const response = await apiClient.get('/history');
-                setHistory(response.data.data);
-            } catch (error) {
-                console.error('Error fetching history', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchHistory = async () => {
+        if (!user) return;
+        try {
+            const response = await apiClient.get('/history');
+            setHistory(response.data.data);
+        } catch (error) {
+            console.error('Error fetching history', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        // Fetch when focused might be better, but we'll load on mount and auth state change.
+    useEffect(() => {
         fetchHistory();
-    }, [user, activeTab]); // Re-fetch occasionally
+    }, [user, activeTab]);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchHistory();
+        setRefreshing(false);
+    }, [user, activeTab]);
 
     const handleBookPress = (book: Audiobook) => {
         // @ts-ignore
@@ -73,6 +79,9 @@ export default function LibraryScreen() {
                 className="flex-1 px-6 pt-4 mb-16 "
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 40 }}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
+                }
             >
                 {loading ? (
                     <View className="mt-4">

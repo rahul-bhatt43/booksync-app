@@ -4,8 +4,8 @@ import Skeleton from '@/components/Skeleton';
 import { useAudio } from '@/contexts/AudioContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChevronRight, Clock, CreditCard, Headphones, HelpCircle, LogOut, Settings } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -14,20 +14,28 @@ export default function ProfileScreen() {
     const { clearAudio } = useAudio();
     const [profileData, setProfileData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchProfile = async () => {
+        if (!user?.id) return;
+        try {
+            const response = await apiClient.get(`/users/profile/${user.id}`);
+            setProfileData(response.data.data);
+        } catch (error) {
+            console.error('Error fetching profile', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            if (!user?.id) return;
-            try {
-                const response = await apiClient.get(`/users/profile/${user.id}`);
-                setProfileData(response.data.data);
-            } catch (error) {
-                console.error('Error fetching profile', error);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchProfile();
+    }, [user?.id]);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchProfile();
+        setRefreshing(false);
     }, [user?.id]);
 
     const handleSignOut = async () => {
@@ -65,6 +73,9 @@ export default function ProfileScreen() {
                     className="flex-1"
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 40 }}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
+                    }
                 >
                     {/* Header & Avatar */}
                     <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="px-6 pt-6 pb-8 items-center border-b border-zinc-800/50">

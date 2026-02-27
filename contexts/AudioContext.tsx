@@ -98,6 +98,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         try {
             // Unload previous sound if it exists
             if (sound) {
+                if (isPlayingRef.current || positionRef.current > 0) {
+                    await syncHistory();
+                }
                 await sound.unloadAsync();
             }
 
