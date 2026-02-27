@@ -83,7 +83,7 @@ export default function PlayerScreen() {
 
     const handleToggleLike = async () => {
         try {
-            await apiClient.post(`/ interactions / audiobooks / ${bookId}/like`);
+            await apiClient.post(`/interactions/audiobooks/${bookId}/like`);
             setIsLiked(!isLiked);
             setBookData((prev: any) => {
                 if (!prev) return prev;
