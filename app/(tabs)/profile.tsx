@@ -1,10 +1,11 @@
 import apiClient from '@/api/client';
 import GlassContainer from '@/components/GlassContainer';
+import Skeleton from '@/components/Skeleton';
 import { useAudio } from '@/contexts/AudioContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChevronRight, Clock, CreditCard, Headphones, HelpCircle, LogOut, Settings } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -43,8 +44,21 @@ export default function ProfileScreen() {
     return (
         <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
             {loading ? (
-                <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator size="large" color="#f59e0b" />
+                <View className="flex-1 px-6 pt-6">
+                    <View className="items-center pb-8 border-b border-zinc-800/50">
+                        <Skeleton width={96} height={96} borderRadius={48} className="mb-4" />
+                        <Skeleton width={160} height={28} className="mb-2" />
+                        <Skeleton width={120} height={16} className="mb-6" />
+                        <View className="flex-row justify-between w-full px-4">
+                            <Skeleton width="45%" height={80} borderRadius={16} className="mr-3" />
+                            <Skeleton width="45%" height={80} borderRadius={16} className="ml-3" />
+                        </View>
+                    </View>
+                    <View className="pt-8 mb-16">
+                        <Skeleton width={80} height={14} className="mb-4" />
+                        <Skeleton width="100%" height={200} borderRadius={16} className="mb-8" />
+                        <Skeleton width="100%" height={56} borderRadius={16} />
+                    </View>
                 </View>
             ) : (
                 <ScrollView

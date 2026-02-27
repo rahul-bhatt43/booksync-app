@@ -1,9 +1,10 @@
 import apiClient from '@/api/client';
+import Skeleton from '@/components/Skeleton';
 import { useAudio } from '@/contexts/AudioContext';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronDown, Clock, Heart, ListMusic, MessageCircle, Pause, Play, RotateCcw, RotateCw } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeOut, FadeOutDown, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,11 +16,11 @@ const formatTime = (millis: number) => {
     const totalSeconds = Math.floor(millis / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds} `;
 };
 
 export default function PlayerScreen() {
-    const { id } = useLocalSearchParams();
+    const { id, position: initialPositionParam } = useLocalSearchParams();
     const router = useRouter();
     const [isVisible, setIsVisible] = useState(true);
     const {
@@ -39,11 +40,13 @@ export default function PlayerScreen() {
     const [loading, setLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
 
+    const initialPositionSec = Number(initialPositionParam) || 0;
+
     useEffect(() => {
         const fetchAudiobook = async () => {
             if (!bookId) return;
             try {
-                const response = await apiClient.get(`/audiobooks/${bookId}`);
+                const response = await apiClient.get(`/ audiobooks / ${bookId} `);
                 const data = response.data.data;
                 setBookData(data);
                 setIsLiked(!!data.isLikedByUser);
@@ -55,7 +58,7 @@ export default function PlayerScreen() {
                         author: data.author,
                         coverUrl: data.coverImageUrl,
                         audioUrl: data.audioUrl
-                    });
+                    }, initialPositionSec * 1000);
                 }
             } catch (error) {
                 console.error('Error fetching audiobook', error);
@@ -69,7 +72,7 @@ export default function PlayerScreen() {
 
     const handleToggleLike = async () => {
         try {
-            await apiClient.post(`/interactions/audiobooks/${bookId}/like`);
+            await apiClient.post(`/ interactions / audiobooks / ${bookId}/like`);
             setIsLiked(!isLiked);
             setBookData((prev: any) => {
                 if (!prev) return prev;
@@ -111,7 +114,7 @@ export default function PlayerScreen() {
         } else {
             if (!currentTrack || currentTrack.id !== bookId) {
                 if (displayBook) {
-                    loadAndPlayTrack(displayBook as any);
+                    loadAndPlayTrack(displayBook as any, initialPositionSec * 1000);
                 }
             } else {
                 playTrack();
@@ -158,8 +161,30 @@ export default function PlayerScreen() {
                     </Animated.View>
 
                     {loading || !displayBook ? (
-                        <View className="flex-1 justify-center items-center">
-                            <ActivityIndicator size="large" color="#f59e0b" />
+                        <View className="flex-1 px-10 pt-4">
+                            {/* Cover Art Skeleton */}
+                            <View className="items-center mt-2 mb-10">
+                                <Skeleton width={width * 0.75} height={width * 0.75} borderRadius={24} />
+                            </View>
+                            {/* Info Skeleton */}
+                            <View className="items-center mb-8 px-4">
+                                <Skeleton width="80%" height={36} className="mb-3" />
+                                <Skeleton width="50%" height={24} />
+                            </View>
+                            {/* Scrubber Skeleton */}
+                            <View className="mb-10 w-full">
+                                <Skeleton width="100%" height={8} borderRadius={4} className="mb-2" />
+                                <View className="flex-row justify-between">
+                                    <Skeleton width={32} height={12} />
+                                    <Skeleton width={32} height={12} />
+                                </View>
+                            </View>
+                            {/* Controls Skeleton */}
+                            <View className="flex-row justify-between items-center mb-12">
+                                <Skeleton width={64} height={64} borderRadius={32} />
+                                <Skeleton width={96} height={96} borderRadius={48} />
+                                <Skeleton width={64} height={64} borderRadius={32} />
+                            </View>
                         </View>
                     ) : (
                         <>

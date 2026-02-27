@@ -1,4 +1,5 @@
 import apiClient from '@/api/client';
+import Skeleton from '@/components/Skeleton';
 import { Text, View } from '@/components/Themed';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocalSearchParams } from 'expo-router';
@@ -65,9 +66,19 @@ export default function ModalScreen() {
       </View>
 
       {loading ? (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="#f59e0b" />
-        </View>
+        <ScrollView contentContainerStyle={styles.listContainer}>
+          {[...Array(5)].map((_, i) => (
+            <View key={i} style={styles.commentCard} className="bg-zinc-100 dark:bg-zinc-900 border border-transparent dark:border-zinc-800">
+              <View style={styles.commentHeader}>
+                <Skeleton width={28} height={28} borderRadius={14} className="mr-2" />
+                <Skeleton width={100} height={14} />
+              </View>
+              <Skeleton width="100%" height={14} className="mb-2" />
+              <Skeleton width="80%" height={14} className="mb-2" />
+              <Skeleton width="40%" height={14} />
+            </View>
+          ))}
+        </ScrollView>
       ) : (
         <ScrollView contentContainerStyle={styles.listContainer}>
           {comments.length === 0 ? (

@@ -9,6 +9,7 @@ export interface Audiobook {
     author: string;
     coverUrl: string;
     progress?: number; // 0 to 100
+    position?: number; // exact progress in seconds
 }
 
 interface AudiobookCardProps {
@@ -22,8 +23,6 @@ export default function AudiobookCard({
     variant = 'grid',
     onPress
 }: AudiobookCardProps) {
-
-    console.log(book);
 
     if (variant === 'featured') {
         return (

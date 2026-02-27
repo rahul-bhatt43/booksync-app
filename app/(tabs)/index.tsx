@@ -1,11 +1,12 @@
 import apiClient from '@/api/client';
 import AudiobookCard, { Audiobook } from '@/components/AudiobookCard';
 import SectionHeader from '@/components/SectionHeader';
+import Skeleton from '@/components/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Bell } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -48,7 +49,7 @@ export default function HomeScreen() {
 
   const handleBookPress = (book: any) => {
     // @ts-ignore
-    router.push(`/player/${book.id || book._id}`);
+    router.push({ pathname: `/player/${book.id || book._id}`, params: { position: book.position || 0 } });
   };
 
   const mapToAudiobook = (item: any): Audiobook => ({
@@ -61,8 +62,62 @@ export default function HomeScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-zinc-950 justify-center items-center" edges={['top']}>
-        <ActivityIndicator size="large" color="#f59e0b" />
+      <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
+        {/* Header Skeleton */}
+        <View className="px-6 pt-6 pb-8 flex-row justify-between items-start">
+          <View>
+            <Skeleton width={100} height={14} className="mb-2" />
+            <Skeleton width={160} height={32} />
+          </View>
+          <View className="flex-row items-center space-x-4">
+            <Skeleton width={40} height={40} borderRadius={20} />
+            <Skeleton width={40} height={40} borderRadius={20} className="ml-2" />
+          </View>
+        </View>
+
+        {/* Featured Skeleton */}
+        <View className="px-6 mb-8">
+          <View className="flex-row p-4 rounded-3xl bg-zinc-900 border border-zinc-800">
+            <Skeleton width={96} height={144} borderRadius={12} />
+            <View className="flex-1 ml-4 justify-center">
+              <Skeleton width={120} height={14} className="mb-2" />
+              <Skeleton width="100%" height={24} className="mb-2" />
+              <Skeleton width="80%" height={24} className="mb-4" />
+              <Skeleton width={100} height={16} className="mb-6" />
+              <View className="flex-row items-center mt-auto">
+                <Skeleton width={40} height={40} borderRadius={20} className="mr-3" />
+                <View className="flex-1">
+                  <Skeleton width="100%" height={6} className="mb-2" />
+                  <Skeleton width={80} height={14} />
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Recommended Skeleton */}
+        <View className="mb-8">
+          <View className="px-6 mb-4 flex-row justify-between items-center">
+            <Skeleton width={150} height={20} />
+          </View>
+          <View className="flex-row px-6">
+            <View className="w-[140px] mr-4">
+              <Skeleton width={140} height={210} borderRadius={16} className="mb-3" />
+              <Skeleton width="80%" height={16} className="mb-2" />
+              <Skeleton width="50%" height={14} />
+            </View>
+            <View className="w-[140px] mr-4">
+              <Skeleton width={140} height={210} borderRadius={16} className="mb-3" />
+              <Skeleton width="70%" height={16} className="mb-2" />
+              <Skeleton width="60%" height={14} />
+            </View>
+            <View className="w-[140px] mr-4">
+              <Skeleton width={140} height={210} borderRadius={16} className="mb-3" />
+              <Skeleton width="90%" height={16} className="mb-2" />
+              <Skeleton width="40%" height={14} />
+            </View>
+          </View>
+        </View>
       </SafeAreaView>
     );
   }
@@ -72,7 +127,8 @@ export default function HomeScreen() {
       ...mapToAudiobook(feedData.continueListening[0].audiobook),
       progress: feedData.continueListening[0].progressInSeconds && feedData.continueListening[0].audiobook?.durationInSeconds
         ? Math.floor((feedData.continueListening[0].progressInSeconds / feedData.continueListening[0].audiobook.durationInSeconds) * 100)
-        : 0
+        : 0,
+      position: feedData.continueListening[0].progressInSeconds || 0
     }
     : feedData?.popular?.[0] ? mapToAudiobook(feedData.popular[0]) : null;
   const recommendedBooks = feedData?.latest?.map(mapToAudiobook) || [];

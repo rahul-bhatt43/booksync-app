@@ -1,10 +1,11 @@
 import apiClient from '@/api/client';
 import AudiobookCard from '@/components/AudiobookCard';
 import SectionHeader from '@/components/SectionHeader';
+import Skeleton from '@/components/Skeleton';
 import { useRouter } from 'expo-router';
 import { Search as SearchIcon, X } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -130,8 +131,14 @@ export default function ExploreScreen() {
                     <SectionHeader title={selectedGenre ? `${categories.find(c => c._id === selectedGenre)?.name || 'Category'} Audiobooks` : searchQuery ? 'Search Results' : "Discover New Audiobooks"} showSeeAll={false} />
 
                     {loading ? (
-                        <View className="mt-10 items-center justify-center">
-                            <ActivityIndicator size="large" color="#f59e0b" />
+                        <View className="flex-row flex-wrap justify-between mt-6">
+                            {[...Array(6)].map((_, i) => (
+                                <View key={i} className="w-[48%] mb-6">
+                                    <Skeleton width="100%" height={210} borderRadius={16} className="mb-3" />
+                                    <Skeleton width="80%" height={16} className="mb-2" />
+                                    <Skeleton width="50%" height={14} />
+                                </View>
+                            ))}
                         </View>
                     ) : audiobooks.length > 0 ? (
                         <View className="flex-row flex-wrap justify-between mt-2">

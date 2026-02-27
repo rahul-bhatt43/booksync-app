@@ -17,7 +17,7 @@ interface AudioContextType {
     currentTrack: TrackParams | null;
     position: number;
     duration: number;
-    loadAndPlayTrack: (track: TrackParams) => Promise<void>;
+    loadAndPlayTrack: (track: TrackParams, initialPositionMillis?: number) => Promise<void>;
     playTrack: () => Promise<void>;
     pauseTrack: () => Promise<void>;
     seekTrack: (positionMillis: number) => Promise<void>;
@@ -93,7 +93,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const loadAndPlayTrack = async (track: TrackParams) => {
+    const loadAndPlayTrack = async (track: TrackParams, initialPositionMillis?: number) => {
         setIsLoading(true);
         try {
             // Unload previous sound if it exists
@@ -109,7 +109,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
             const { sound: newSound } = await Audio.Sound.createAsync(
                 { uri: track.audioUrl },
-                { shouldPlay: true },
+                { shouldPlay: true, positionMillis: initialPositionMillis || 0 },
                 onPlaybackStatusUpdate
             );
 

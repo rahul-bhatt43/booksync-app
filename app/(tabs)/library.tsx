@@ -1,9 +1,10 @@
 import apiClient from '@/api/client';
 import AudiobookCard, { Audiobook } from '@/components/AudiobookCard';
+import Skeleton from '@/components/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -35,7 +36,7 @@ export default function LibraryScreen() {
 
     const handleBookPress = (book: Audiobook) => {
         // @ts-ignore
-        router.push(`/player/${book.id}`);
+        router.push({ pathname: `/player/${book.id}`, params: { position: book.position || 0 } });
     };
 
     const getTabContent = () => {
@@ -74,8 +75,20 @@ export default function LibraryScreen() {
                 contentContainerStyle={{ paddingBottom: 40 }}
             >
                 {loading ? (
-                    <View className="mt-10 items-center justify-center">
-                        <ActivityIndicator size="large" color="#f59e0b" />
+                    <View className="mt-4">
+                        {[...Array(4)].map((_, i) => (
+                            <View key={i} className="flex-row items-center mb-6">
+                                <Skeleton width={64} height={96} borderRadius={8} />
+                                <View className="flex-1 ml-4 justify-center">
+                                    <Skeleton width="70%" height={18} className="mb-2" />
+                                    <Skeleton width="40%" height={14} className="mb-4" />
+                                    <View className="flex-row items-center">
+                                        <Skeleton width="80%" height={4} borderRadius={2} className="flex-1 mr-3" />
+                                        <Skeleton width={30} height={12} />
+                                    </View>
+                                </View>
+                            </View>
+                        ))}
                     </View>
                 ) : (
                     <Animated.View entering={FadeInDown.duration(600).springify()}>
@@ -87,7 +100,8 @@ export default function LibraryScreen() {
                                     title: item.audiobook.title,
                                     author: item.audiobook.author,
                                     coverUrl: item.audiobook.coverImageUrl,
-                                    progress: item.progressInSeconds ? Math.floor((item.progressInSeconds / item.audiobook.durationInSeconds) * 100) : 0
+                                    progress: item.progressInSeconds ? Math.floor((item.progressInSeconds / item.audiobook.durationInSeconds) * 100) : 0,
+                                    position: item.progressInSeconds || 0
                                 }}
                                 variant="list"
                                 onPress={handleBookPress}
