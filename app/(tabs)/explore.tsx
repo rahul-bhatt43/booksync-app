@@ -159,7 +159,7 @@ export default function ExploreScreen() {
                                     <AudiobookCard book={{
                                         id: book._id,
                                         title: book.title,
-                                        author: book.author,
+                                        author: book.authorId,
                                         coverUrl: book.coverImageUrl,
                                         progress: 0
                                     }} variant="grid" onPress={() => handleBookPress(book)} />

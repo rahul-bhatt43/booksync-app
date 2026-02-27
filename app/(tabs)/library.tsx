@@ -107,7 +107,7 @@ export default function LibraryScreen() {
                                 book={{
                                     id: item.audiobook._id,
                                     title: item.audiobook.title,
-                                    author: item.audiobook.author,
+                                    author: item.audiobook.authorId,
                                     coverUrl: item.audiobook.coverImageUrl,
                                     progress: item.progressInSeconds ? Math.floor((item.progressInSeconds / item.audiobook.durationInSeconds) * 100) : 0,
                                     position: item.progressInSeconds || 0

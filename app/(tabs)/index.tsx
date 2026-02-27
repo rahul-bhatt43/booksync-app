@@ -55,7 +55,7 @@ export default function HomeScreen() {
   const mapToAudiobook = (item: any): Audiobook => ({
     id: item._id,
     title: item.title,
-    author: item.author,
+    author: item.authorId,
     coverUrl: item.coverImageUrl,
     progress: item.progressInSeconds ? Math.floor((item.progressInSeconds / item.durationInSeconds) * 100) : 0,
   });

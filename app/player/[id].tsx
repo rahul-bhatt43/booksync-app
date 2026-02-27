@@ -59,7 +59,7 @@ export default function PlayerScreen() {
                 loadAndPlayTrack({
                     id: data._id,
                     title: data.title,
-                    author: data.author,
+                    author: data.authorId,
                     coverUrl: data.coverImageUrl,
                     audioUrl: data.audioUrl
                 }, resumePositionMillis);
@@ -106,7 +106,7 @@ export default function PlayerScreen() {
     const displayBook = currentTrack?.id === bookId ? currentTrack : (bookData ? {
         id: bookData._id,
         title: bookData.title,
-        author: bookData.author,
+        author: bookData.authorId,
         coverUrl: bookData.coverImageUrl,
         audioUrl: bookData.audioUrl
     } : null);
@@ -221,7 +221,7 @@ export default function PlayerScreen() {
                                         {displayBook.title}
                                     </Text>
                                     <Text className="text-amber-500 font-inter-medium text-lg">
-                                        {displayBook.author}
+                                        {displayBook.author.name}
                                     </Text>
                                 </Animated.View>
 

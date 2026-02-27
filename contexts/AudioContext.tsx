@@ -5,7 +5,10 @@ import apiClient from '../api/client';
 export interface TrackParams {
     id: string;
     title: string;
-    author: string;
+    author: {
+        name: string;
+        _id: string;
+    };
     coverUrl: string;
     audioUrl: string;
 }

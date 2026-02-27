@@ -6,7 +6,10 @@ import GlassContainer from './GlassContainer';
 export interface Audiobook {
     id: string;
     title: string;
-    author: string;
+    author: {
+        name: string;
+        _id: string;
+    };
     coverUrl: string;
     progress?: number; // 0 to 100
     position?: number; // exact progress in seconds
@@ -41,7 +44,7 @@ export default function AudiobookCard({
                             {book.title}
                         </Text>
                         <Text className="text-zinc-400 font-inter-medium text-sm mb-4">
-                            {book.author}
+                            {book.author.name}
                         </Text>
 
                         {book.progress !== undefined && (
@@ -81,7 +84,7 @@ export default function AudiobookCard({
                         {book.title}
                     </Text>
                     <Text className="text-zinc-400 font-inter text-sm mb-2" numberOfLines={1}>
-                        {book.author}
+                        {book.author.name}
                     </Text>
                     {book.progress !== undefined && (
                         <View className="flex-row items-center">
@@ -111,7 +114,7 @@ export default function AudiobookCard({
                 {book.title}
             </Text>
             <Text className="text-zinc-400 font-inter text-xs" numberOfLines={1}>
-                {book.author}
+                {book.author.name}
             </Text>
         </TouchableOpacity>
     );

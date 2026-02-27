@@ -94,7 +94,7 @@ export default function MiniPlayer() {
                     {currentTrack.title}
                 </Text>
                 <Text className="text-zinc-400 font-inter text-xs" numberOfLines={1}>
-                    {currentTrack.author}
+                    {currentTrack.author.name}
                 </Text>
             </TouchableOpacity>
 
