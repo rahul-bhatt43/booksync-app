@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import apiClient from '../api/client';
 
 type User = {
     id: string;
@@ -25,10 +27,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const checkUser = async () => {
             setIsLoading(true);
-            // Simulate network wait
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            // For dummy purpose, not persisting automatically
-            setUser(null);
+            try {
+                const token = await AsyncStorage.getItem('authToken');
+                const userData = await AsyncStorage.getItem('userData');
+                if (token && userData) {
+                    setUser(JSON.parse(userData));
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error('Failed to load local user data', error);
+                setUser(null);
+            }
             setIsLoading(false);
         };
 
@@ -36,32 +46,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const signIn = async (email?: string, password?: string) => {
+        if (!email || !password) throw new Error('Email and password required');
         setIsLoading(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setUser({ id: '1', email: email || 'user@example.com', name: 'Test User' });
-        setIsLoading(false);
+        try {
+            const response = await apiClient.post('/auth/login', { email, password });
+            const { token, user: userData } = response.data.data;
+            const userToSet = { ...userData, id: userData._id };
+            await AsyncStorage.setItem('authToken', token);
+            await AsyncStorage.setItem('userData', JSON.stringify(userToSet));
+            setUser(userToSet);
+        } catch (error) {
+            console.error('Login error', error);
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const signUp = async (name?: string, email?: string, password?: string) => {
+        if (!name || !email || !password) throw new Error('Name, email and password required');
         setIsLoading(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setUser({ id: '1', email: email || 'user@example.com', name: name || 'Test User' });
-        setIsLoading(false);
+        try {
+            const response = await apiClient.post('/auth/register', { name, email, password });
+            const { token, user: userData } = response.data.data;
+            const userToSet = { ...userData, id: userData._id };
+            await AsyncStorage.setItem('authToken', token);
+            await AsyncStorage.setItem('userData', JSON.stringify(userToSet));
+            setUser(userToSet);
+        } catch (error) {
+            console.error('Signup error', error);
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const signOut = async () => {
         setIsLoading(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setUser(null);
-        setIsLoading(false);
+        try {
+            await AsyncStorage.removeItem('authToken');
+            await AsyncStorage.removeItem('userData');
+            setUser(null);
+        } catch (error) {
+            console.error('Logout error', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const resetPassword = async (email: string) => {
         setIsLoading(true);
-        // Simulate API call
+        // Simulate API call, not provided in endpoints. Keep as stub.
         await new Promise((resolve) => setTimeout(resolve, 800));
         setIsLoading(false);
     };

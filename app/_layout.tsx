@@ -51,7 +51,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      // Splash screen is hidden in RootLayoutNav after auth check resolves
     }
   }, [loaded]);
 
@@ -86,6 +86,11 @@ function RootLayoutNav() {
       // Redirect away from the sign-in page if the user is signed in
       router.replace('/(tabs)');
     }
+
+    // Hide splash screen once auth check is complete and navigation is triggered
+    setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 100);
   }, [user, isLoading, segments]);
 
   return (

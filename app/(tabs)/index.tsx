@@ -1,36 +1,82 @@
+import apiClient from '@/api/client';
 import AudiobookCard, { Audiobook } from '@/components/AudiobookCard';
 import SectionHeader from '@/components/SectionHeader';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Bell } from 'lucide-react-native';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-// Mock Data
-const continueBook: Audiobook = {
-  id: '1',
-  title: 'The Martian',
-  author: 'Andy Weir',
-  coverUrl: 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=400&auto=format&fit=crop',
-  progress: 68
-};
-
-const recommendedBooks: Audiobook[] = [
-  { id: '2', title: 'Dune', author: 'Frank Herbert', coverUrl: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=400&auto=format&fit=crop' },
-  { id: '3', title: 'Project Hail Mary', author: 'Andy Weir', coverUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=400&auto=format&fit=crop' },
-  { id: '4', title: 'Foundation', author: 'Isaac Asimov', coverUrl: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=400&auto=format&fit=crop' },
-];
 
 export default function HomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const firstName = user?.name?.split(' ')[0] || 'Listener';
 
-  const handleBookPress = (book: Audiobook) => {
-    // @ts-ignore - Ignore the explicit absolute path requirements of Expo Router
-    router.push(`/player/${book.id}`);
+  const [feedData, setFeedData] = useState<{
+    continueListening: any[];
+    latest: any[];
+    popular: any[];
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchFeed = async () => {
+    try {
+      const response = await apiClient.get('/feed/home');
+      setFeedData(response.data.data);
+    } catch (error) {
+      console.error('Error fetching home feed', error);
+    }
   };
+
+  useEffect(() => {
+    const initLoad = async () => {
+      await fetchFeed();
+      setLoading(false);
+    };
+    initLoad();
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchFeed();
+    setRefreshing(false);
+  }, []);
+
+  const handleBookPress = (book: any) => {
+    // @ts-ignore
+    router.push(`/player/${book.id || book._id}`);
+  };
+
+  const mapToAudiobook = (item: any): Audiobook => ({
+    id: item._id,
+    title: item.title,
+    author: item.author,
+    coverUrl: item.coverImageUrl,
+    progress: item.progressInSeconds ? Math.floor((item.progressInSeconds / item.durationInSeconds) * 100) : 0,
+  });
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-zinc-950 justify-center items-center" edges={['top']}>
+        <ActivityIndicator size="large" color="#f59e0b" />
+      </SafeAreaView>
+    );
+  }
+
+  const continueBook = feedData?.continueListening?.[0]
+    ? {
+      ...mapToAudiobook(feedData.continueListening[0].audiobook),
+      progress: feedData.continueListening[0].progressInSeconds && feedData.continueListening[0].audiobook?.durationInSeconds
+        ? Math.floor((feedData.continueListening[0].progressInSeconds / feedData.continueListening[0].audiobook.durationInSeconds) * 100)
+        : 0
+    }
+    : feedData?.popular?.[0] ? mapToAudiobook(feedData.popular[0]) : null;
+  const recommendedBooks = feedData?.latest?.map(mapToAudiobook) || [];
+  const trendingBooks = feedData?.popular?.map(mapToAudiobook) || [];
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
@@ -38,6 +84,9 @@ export default function HomeScreen() {
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
+        }
       >
         {/* Header */}
         <Animated.View entering={FadeIn.duration(600)} className="px-6 pt-6 pb-8 flex-row justify-between items-start">
@@ -61,9 +110,11 @@ export default function HomeScreen() {
         </Animated.View>
 
         {/* Featured / Continue Listening */}
-        <Animated.View entering={FadeInDown.delay(100).duration(800).springify()} className="px-6 mb-8">
-          <AudiobookCard book={continueBook} variant="featured" onPress={handleBookPress} />
-        </Animated.View>
+        {continueBook && (
+          <Animated.View entering={FadeInDown.delay(100).duration(800).springify()} className="px-6 mb-8">
+            <AudiobookCard book={continueBook} variant="featured" onPress={handleBookPress} />
+          </Animated.View>
+        )}
 
         {/* Recommended Section */}
         <Animated.View entering={FadeInDown.delay(200).duration(800).springify()} className="mb-8">
@@ -91,8 +142,8 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 24 }}
           >
-            {[...recommendedBooks].reverse().map((book) => (
-              <AudiobookCard key={`trend-${book.id}`} book={book} variant="grid" />
+            {trendingBooks.map((book) => (
+              <AudiobookCard key={`trend-${book.id}`} book={book} variant="grid" onPress={handleBookPress} />
             ))}
           </ScrollView>
         </Animated.View>

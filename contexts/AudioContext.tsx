@@ -1,5 +1,6 @@
 import { Audio, AVPlaybackStatus } from 'expo-av';
-import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import apiClient from '../api/client';
 
 export interface TrackParams {
     id: string;
@@ -34,14 +35,46 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     const [position, setPosition] = useState(0);
     const [duration, setDuration] = useState(0);
 
+    // Use refs for latest state values needed in callbacks without triggering re-creation
+    const positionRef = useRef(0);
+    const durationRef = useRef(0);
+    const isPlayingRef = useRef(false);
+    const currentTrackRef = useRef<TrackParams | null>(null);
+
+    useEffect(() => {
+        positionRef.current = position;
+        durationRef.current = duration;
+        isPlayingRef.current = isPlaying;
+        currentTrackRef.current = currentTrack;
+    }, [position, duration, isPlaying, currentTrack]);
+
+    const syncHistory = async (forceCompleted = false) => {
+        const track = currentTrackRef.current;
+        if (!track) return;
+        try {
+            const progressInSeconds = Math.floor(positionRef.current / 1000);
+            const isCompleted = forceCompleted || (durationRef.current > 0 && positionRef.current >= durationRef.current - 1000);
+            await apiClient.post('/history/update', {
+                audiobookId: track.id,
+                progressInSeconds,
+                isCompleted
+            });
+        } catch (error) {
+            console.error('Error syncing history', error);
+        }
+    };
+
     // Clean up sound object when component unmounts
     useEffect(() => {
-        return sound
-            ? () => {
+        return () => {
+            if (sound) {
                 console.log('Unloading Sound');
+                if (isPlayingRef.current || positionRef.current > 0) {
+                    syncHistory().catch(console.error);
+                }
                 sound.unloadAsync();
             }
-            : undefined;
+        };
     }, [sound]);
 
     const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
@@ -53,6 +86,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
             if (status.didJustFinish) {
                 setIsPlaying(false);
                 setPosition(status.durationMillis ?? 0);
+                syncHistory(true);
             }
         } else if (status.error) {
             console.error(`Playback Error: ${status.error}`);
@@ -108,6 +142,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
                 if (status.isLoaded) {
                     await sound.pauseAsync();
                     setIsPlaying(false);
+                    await syncHistory();
                 }
             } catch (e) { console.error(e) }
         }
@@ -123,12 +158,16 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         if (sound) {
             await sound.stopAsync();
             setIsPlaying(false);
+            await syncHistory();
             setPosition(0);
         }
     }
 
     const clearAudio = async () => {
         if (sound) {
+            if (isPlayingRef.current || positionRef.current > 0) {
+                await syncHistory();
+            }
             await sound.unloadAsync();
         }
         setSound(null);

@@ -1,47 +1,73 @@
-import AudiobookCard, { Audiobook } from '@/components/AudiobookCard';
+import apiClient from '@/api/client';
+import AudiobookCard from '@/components/AudiobookCard';
 import SectionHeader from '@/components/SectionHeader';
 import { useRouter } from 'expo-router';
 import { Search as SearchIcon, X } from 'lucide-react-native';
-import React, { useMemo, useState } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const genres = ['Sci-Fi', 'Fantasy', 'Business', 'Self Help', 'Mystery', 'Biography', 'History', 'Romance'];
-
-// Extend Audiobook with a genre for testing filtering
-type DiscoverBook = Audiobook & { genre: string };
-
-const discoverBooks: DiscoverBook[] = [
-    { id: '10', title: 'Atomic Habits', author: 'James Clear', coverUrl: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=400&auto=format&fit=crop', genre: 'Self Help' },
-    { id: '11', title: 'Deep Work', author: 'Cal Newport', coverUrl: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop', genre: 'Business' },
-    { id: '12', title: 'The Hobbit', author: 'J.R.R. Tolkien', coverUrl: 'https://images.unsplash.com/photo-1606744888044-6a9dd7a6f2c0?q=80&w=400&auto=format&fit=crop', genre: 'Fantasy' },
-    { id: '13', title: '1984', author: 'George Orwell', coverUrl: 'https://images.unsplash.com/photo-1535905557558-afc4877a26fc?q=80&w=400&auto=format&fit=crop', genre: 'Sci-Fi' },
-    { id: '14', title: 'Sapiens', author: 'Yuval Noah Harari', coverUrl: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop', genre: 'History' },
-];
 
 export default function ExploreScreen() {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+    const [categories, setCategories] = useState<{ _id: string, name: string }[]>([]);
+    const [audiobooks, setAudiobooks] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const handleBookPress = (book: Audiobook) => {
-        // @ts-ignore - dynamic route string casting
-        router.push(`/player/${book.id}`);
-    };
+    // Fetch categories on mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await apiClient.get('/categories');
+                setCategories(response.data.data);
+            } catch (error) {
+                console.error('Error fetching categories', error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
-    const handleGenreSelect = (genre: string) => {
-        setSelectedGenre(prev => prev === genre ? null : genre);
-    };
+    // Fetch audiobooks when search query or selected genre changes
+    useEffect(() => {
+        const fetchAudiobooks = async () => {
+            setLoading(true);
+            try {
+                let url = '/audiobooks';
+                if (searchQuery) {
+                    url = `/feed/search?q=${encodeURIComponent(searchQuery)}`;
+                } else if (selectedGenre) {
+                    url = `/audiobooks?categoryId=${selectedGenre}`;
+                }
 
-    const filteredBooks = useMemo(() => {
-        return discoverBooks.filter((book) => {
-            const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                book.author.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesGenre = selectedGenre ? book.genre === selectedGenre : true;
-            return matchesSearch && matchesGenre;
-        });
+                const response = await apiClient.get(url);
+                // Search API returns { audiobooks: [...] } inside data, list API returns direct array inside data
+                const data = response.data.data;
+                setAudiobooks(Array.isArray(data) ? data : data.audiobooks || []);
+            } catch (error) {
+                console.error('Error fetching audiobooks', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const timer = setTimeout(() => {
+            fetchAudiobooks();
+        }, 500); // debounce search
+
+        return () => clearTimeout(timer);
     }, [searchQuery, selectedGenre]);
+
+    const handleBookPress = (book: any) => {
+        // @ts-ignore
+        router.push(`/player/${book._id}`);
+    };
+
+    const handleGenreSelect = (genreId: string) => {
+        setSelectedGenre(prev => prev === genreId ? null : genreId);
+        setSearchQuery(''); // clear search when exploring categories
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
@@ -78,20 +104,20 @@ export default function ExploreScreen() {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{ paddingHorizontal: 24, paddingVertical: 4 }}
                     >
-                        {genres.map((genre, index) => {
-                            const isSelected = selectedGenre === genre;
+                        {categories.map((category) => {
+                            const isSelected = selectedGenre === category._id;
                             return (
                                 <TouchableOpacity
-                                    key={index}
+                                    key={category._id}
                                     activeOpacity={0.7}
-                                    onPress={() => handleGenreSelect(genre)}
+                                    onPress={() => handleGenreSelect(category._id)}
                                     className={`px-5 py-2.5 rounded-full mr-3 shadow-sm border ${isSelected
-                                            ? 'bg-amber-500 border-amber-500'
-                                            : 'bg-zinc-900 border-zinc-800'
+                                        ? 'bg-amber-500 border-amber-500'
+                                        : 'bg-zinc-900 border-zinc-800'
                                         }`}
                                 >
                                     <Text className={`font-inter-medium ${isSelected ? 'text-zinc-950 font-inter-bold' : 'text-zinc-300'}`}>
-                                        {genre}
+                                        {category.name}
                                     </Text>
                                 </TouchableOpacity>
                             );
@@ -101,13 +127,23 @@ export default function ExploreScreen() {
 
                 {/* Discover Grid */}
                 <Animated.View entering={FadeInDown.delay(200).duration(800).springify()} className="px-6 mb-16">
-                    <SectionHeader title={selectedGenre ? `${selectedGenre} Audiobooks` : "Discover New Audiobooks"} showSeeAll={false} />
+                    <SectionHeader title={selectedGenre ? `${categories.find(c => c._id === selectedGenre)?.name || 'Category'} Audiobooks` : searchQuery ? 'Search Results' : "Discover New Audiobooks"} showSeeAll={false} />
 
-                    {filteredBooks.length > 0 ? (
+                    {loading ? (
+                        <View className="mt-10 items-center justify-center">
+                            <ActivityIndicator size="large" color="#f59e0b" />
+                        </View>
+                    ) : audiobooks.length > 0 ? (
                         <View className="flex-row flex-wrap justify-between mt-2">
-                            {filteredBooks.map((book) => (
-                                <View key={book.id} className="w-[48%] mb-6">
-                                    <AudiobookCard book={book} variant="grid" onPress={() => handleBookPress(book)} />
+                            {audiobooks.map((book) => (
+                                <View key={book._id} className="w-[48%] mb-6">
+                                    <AudiobookCard book={{
+                                        id: book._id,
+                                        title: book.title,
+                                        author: book.author,
+                                        coverUrl: book.coverImageUrl,
+                                        progress: 0
+                                    }} variant="grid" onPress={() => handleBookPress(book)} />
                                 </View>
                             ))}
                         </View>

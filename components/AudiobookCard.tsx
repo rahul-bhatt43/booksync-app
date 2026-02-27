@@ -23,6 +23,8 @@ export default function AudiobookCard({
     onPress
 }: AudiobookCardProps) {
 
+    console.log(book);
+
     if (variant === 'featured') {
         return (
             <TouchableOpacity activeOpacity={0.8} onPress={() => onPress?.(book)}>

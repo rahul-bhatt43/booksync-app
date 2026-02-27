@@ -1,0 +1,2719 @@
+{
+  "info": {
+    "_postman_id": "60a44769-2603-469e-ac88-2e0629a7ebaa",
+    "name": "Audiobooks Server API",
+    "description": "Postman Collection for Audiobooks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42308200",
+    "_collection_link": "https://go.postman.co/collection/42308200-60a44769-2603-469e-ac88-2e0629a7ebaa?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Rahul\",\n    \"email\": \"rahul92@yopmail.com\",\n    \"password\": \"Test@321\",\n    \"role\": \"user\" // optional, can be 'admin'/'user'\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Rahul\",\n    \"email\": \"rahul92@yopmail.com\",\n    \"password\": \"Test@321\",\n    \"role\": \"user\" // optional, can be 'admin'/'user'\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "326"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"146-/q+HZnar5d1rTDr6msPVaFLuDJs\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 04:51:50 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"user\": {\n            \"_id\": \"699fd166645d44c937ddc854\",\n            \"name\": \"Rahul\",\n            \"email\": \"rahul92@yopmail.com\",\n            \"role\": \"user\"\n        },\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OWZkMTY2NjQ1ZDQ0YzkzN2RkYzg1NCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzcyMDgxNTEwLCJleHAiOjE3NzQ2NzM1MTB9.AtWdI86iYGgFlBXqDgMbNQjJcPK0HEESF0GEaGrdRHw\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.token) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"rahul92@yopmail.com\",\n    \"password\": \"Test@321\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"rahul92@yopmail.com\",\n    \"password\": \"Test@321\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "326"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"146-wh7uEkeVX6Ah7hj9+6AHe98jBco\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 04:52:47 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"user\": {\n            \"_id\": \"699fd166645d44c937ddc854\",\n            \"name\": \"Rahul\",\n            \"email\": \"rahul92@yopmail.com\",\n            \"role\": \"user\"\n        },\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OWZkMTY2NjQ1ZDQ0YzkzN2RkYzg1NCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzcyMDgxNTY3LCJleHAiOjE3NzQ2NzM1Njd9.TZ6OaVJGeeUG2y6_92NE9Tl7-d5-JABXe7q4BzY9TnU\"\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/profile/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "699fd166645d44c937ddc854"
+                }
+              ]
+            },
+            "description": "Optional Auth: Token can be passed to see more details if requested by owner."
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "699fd166645d44c937ddc854"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "209"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"d1-PP70QvhLlhm4d34+PaB8/okP230\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 04:54:27 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"user\": {\n            \"_id\": \"699fd166645d44c937ddc854\",\n            \"name\": \"Rahul\",\n            \"email\": \"rahul92@yopmail.com\",\n            \"createdAt\": \"2026-02-26T04:51:50.768Z\",\n            \"updatedAt\": \"2026-02-26T04:51:50.768Z\",\n            \"__v\": 0\n        },\n        \"likes\": []\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get Categories",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "719"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2cf-B3CEz7tNtTkxEyMLO2Zhu0BxhlY\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:05:52 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"699fd458645d44c937ddc85b\",\n            \"name\": \"Self-Help\",\n            \"description\": \"Self-Help\",\n            \"createdAt\": \"2026-02-26T05:04:24.270Z\",\n            \"updatedAt\": \"2026-02-26T05:04:24.270Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"699fd464645d44c937ddc85e\",\n            \"name\": \"Psychology\",\n            \"description\": \"Psychology\",\n            \"createdAt\": \"2026-02-26T05:04:36.489Z\",\n            \"updatedAt\": \"2026-02-26T05:04:36.489Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"699fd46f645d44c937ddc861\",\n            \"name\": \"Personal Development\",\n            \"description\": \"Personal Development\",\n            \"createdAt\": \"2026-02-26T05:04:47.384Z\",\n            \"updatedAt\": \"2026-02-26T05:04:47.384Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"699fd4ac645d44c937ddc864\",\n            \"name\": \"Neuroscience\",\n            \"description\": \"Neuroscience\",\n            \"createdAt\": \"2026-02-26T05:05:48.188Z\",\n            \"updatedAt\": \"2026-02-26T05:05:48.188Z\",\n            \"__v\": 0\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Fiction\",\n    \"description\": \"Fictional books\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            },
+            "description": "Requires Admin Token"
+          },
+          "response": [
+            {
+              "name": "201",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Neuroscience\",\n    \"description\": \"Neuroscience\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "195"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"c3-qQJYE1pW7uaYcItGjF4YTNGew4E\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:05:48 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"name\": \"Neuroscience\",\n        \"description\": \"Neuroscience\",\n        \"_id\": \"699fd4ac645d44c937ddc864\",\n        \"createdAt\": \"2026-02-26T05:05:48.188Z\",\n        \"updatedAt\": \"2026-02-26T05:05:48.188Z\",\n        \"__v\": 0\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Neuroscience\",\n    \"description\": \"Neuroscience d\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "699fd4ac645d44c937ddc864"
+                }
+              ]
+            },
+            "description": "Requires Admin Token"
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Neuroscience\",\n    \"description\": \"Neuroscience d\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/categories/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "categories",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "699fd4ac645d44c937ddc864"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "197"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"c5-ZeqymrThXpAAzbvWYoLBcqoa+rk\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:42:48 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"699fd4ac645d44c937ddc864\",\n        \"name\": \"Neuroscience\",\n        \"description\": \"Neuroscience d\",\n        \"createdAt\": \"2026-02-26T05:05:48.188Z\",\n        \"updatedAt\": \"2026-02-26T05:42:48.786Z\",\n        \"__v\": 0\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ENTER_CATEGORY_ID"
+                }
+              ]
+            },
+            "description": "Requires Admin Token"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Audiobooks",
+      "item": [
+        {
+          "name": "Get All Audiobooks",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/audiobooks?categoryId=699fd464645d44c937ddc85e,699fd458645d44c937ddc85b",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audiobooks"
+              ],
+              "query": [
+                {
+                  "key": "categoryId",
+                  "value": "699fd464645d44c937ddc85e,699fd458645d44c937ddc85b"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/audiobooks",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "audiobooks"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "2620"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"a3c-e+HhPHHOH0g+ZWbBdD0NXYeUqoQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:26:35 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"699fd6a4645d44c937ddc86b\",\n            \"title\": \"Brain Rules\",\n            \"author\": \"Dr. John Medina\",\n            \"description\": \"Brain Rules (2008) by Dr. John Medina is a science-backed guide that explains how the human brain functions and how to apply this knowledge to improve work, school, and home life. A molecular biologist, Medina breaks down complex neuroscience into 12 \\\"rules\\\" that describe our brain's core abilities and limitations.\\nThe book's core premise is that modern environments—like high-stress cubicles and sedentary classrooms—are often designed in direct opposition to how our brains evolved to function. By understanding evolutionary biology, we can use our natural impulses to enhance learning, productivity, and health.\",\n            \"categoryId\": {\n                \"_id\": \"699fd464645d44c937ddc85e\",\n                \"name\": \"Psychology\"\n            },\n            \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082847/audiobooks/iml7jx3s3kgl0pg90fqj.mp3\",\n            \"audioPublicId\": \"audiobooks/iml7jx3s3kgl0pg90fqj\",\n            \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082851/audiobooks/covers/gyzt1hmdtwgh0kqpsdnj.png\",\n            \"coverImagePublicId\": \"audiobooks/covers/gyzt1hmdtwgh0kqpsdnj\",\n            \"durationInSeconds\": 1698.586122,\n            \"likesCount\": 1,\n            \"commentsCount\": 0,\n            \"createdAt\": \"2026-02-26T05:14:12.705Z\",\n            \"updatedAt\": \"2026-02-26T05:25:40.528Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"699fd56c645d44c937ddc868\",\n            \"title\": \"Better Than Before\",\n            \"author\": \"Gretchen Rubin\",\n            \"description\": \"Better Than Before (2015) by Gretchen Rubin is a self-help guide that argues the secret to changing habits is self-knowledge. It rejects \\\"one-size-fits-all\\\" solutions, instead offering a framework called the Four Tendencies—Upholder, Questioner, Obliger, and Rebel—to help you identify how you personally respond to expectations.\\nThe book identifies 21 strategies to make or break habits, such as monitoring (tracking behavior), scheduling (setting specific times), and accountability (using external pressure). By understanding your own personality type, you can choose the specific tools that will actually work for your life.\",\n            \"categoryId\": {\n                \"_id\": \"699fd458645d44c937ddc85b\",\n                \"name\": \"Self-Help\"\n            },\n            \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082538/audiobooks/w1se17e9tlzfuxnpqb91.mp3\",\n            \"audioPublicId\": \"audiobooks/w1se17e9tlzfuxnpqb91\",\n            \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082541/audiobooks/covers/fdccatxtvt2jfmggfqvs.png\",\n            \"coverImagePublicId\": \"audiobooks/covers/fdccatxtvt2jfmggfqvs\",\n            \"durationInSeconds\": 1442.142041,\n            \"likesCount\": 0,\n            \"commentsCount\": 0,\n            \"createdAt\": \"2026-02-26T05:09:00.994Z\",\n            \"updatedAt\": \"2026-02-26T05:09:00.994Z\",\n            \"__v\": 0\n        }\n    ]\n}"
+            },
+            {
+              "name": "200 category based filters",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/audiobooks?categoryId=699fd464645d44c937ddc85e,699fd458645d44c937ddc85b",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "audiobooks"
+                  ],
+                  "query": [
+                    {
+                      "key": "categoryId",
+                      "value": "699fd464645d44c937ddc85e,699fd458645d44c937ddc85b"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "2620"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"a3c-BD+zlO9++JfnZj+T5XxsFmzJQiM\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:51:32 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"699fd6a4645d44c937ddc86b\",\n            \"title\": \"Brain Rules\",\n            \"author\": \"Dr. John Medina\",\n            \"description\": \"Brain Rules (2008) by Dr. John Medina is a science-backed guide that explains how the human brain functions and how to apply this knowledge to improve work, school, and home life. A molecular biologist, Medina breaks down complex neuroscience into 12 \\\"rules\\\" that describe our brain's core abilities and limitations.\\nThe book's core premise is that modern environments—like high-stress cubicles and sedentary classrooms—are often designed in direct opposition to how our brains evolved to function. By understanding evolutionary biology, we can use our natural impulses to enhance learning, productivity, and health.\",\n            \"categoryId\": {\n                \"_id\": \"699fd464645d44c937ddc85e\",\n                \"name\": \"Psychology\"\n            },\n            \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082847/audiobooks/iml7jx3s3kgl0pg90fqj.mp3\",\n            \"audioPublicId\": \"audiobooks/iml7jx3s3kgl0pg90fqj\",\n            \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082851/audiobooks/covers/gyzt1hmdtwgh0kqpsdnj.png\",\n            \"coverImagePublicId\": \"audiobooks/covers/gyzt1hmdtwgh0kqpsdnj\",\n            \"durationInSeconds\": 1698.586122,\n            \"likesCount\": 2,\n            \"commentsCount\": 1,\n            \"createdAt\": \"2026-02-26T05:14:12.705Z\",\n            \"updatedAt\": \"2026-02-26T05:43:58.582Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"699fd56c645d44c937ddc868\",\n            \"title\": \"Better Than Before\",\n            \"author\": \"Gretchen Rubin\",\n            \"description\": \"Better Than Before (2015) by Gretchen Rubin is a self-help guide that argues the secret to changing habits is self-knowledge. It rejects \\\"one-size-fits-all\\\" solutions, instead offering a framework called the Four Tendencies—Upholder, Questioner, Obliger, and Rebel—to help you identify how you personally respond to expectations.\\nThe book identifies 21 strategies to make or break habits, such as monitoring (tracking behavior), scheduling (setting specific times), and accountability (using external pressure). By understanding your own personality type, you can choose the specific tools that will actually work for your life.\",\n            \"categoryId\": {\n                \"_id\": \"699fd458645d44c937ddc85b\",\n                \"name\": \"Self-Help\"\n            },\n            \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082538/audiobooks/w1se17e9tlzfuxnpqb91.mp3\",\n            \"audioPublicId\": \"audiobooks/w1se17e9tlzfuxnpqb91\",\n            \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082541/audiobooks/covers/fdccatxtvt2jfmggfqvs.png\",\n            \"coverImagePublicId\": \"audiobooks/covers/fdccatxtvt2jfmggfqvs\",\n            \"durationInSeconds\": 1442.142041,\n            \"likesCount\": 0,\n            \"commentsCount\": 0,\n            \"createdAt\": \"2026-02-26T05:09:00.994Z\",\n            \"updatedAt\": \"2026-02-26T05:09:00.994Z\",\n            \"__v\": 0\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Audiobook",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Brain Rules",
+                  "type": "text"
+                },
+                {
+                  "key": "author",
+                  "value": "Dr. John Medina",
+                  "type": "text"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "699fd464645d44c937ddc85e",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Brain Rules (2008) by Dr. John Medina is a science-backed guide that explains how the human brain functions and how to apply this knowledge to improve work, school, and home life. A molecular biologist, Medina breaks down complex neuroscience into 12 \"rules\" that describe our brain's core abilities and limitations.\nThe book's core premise is that modern environments—like high-stress cubicles and sedentary classrooms—are often designed in direct opposition to how our brains evolved to function. By understanding evolutionary biology, we can use our natural impulses to enhance learning, productivity, and health.",
+                  "type": "text"
+                },
+                {
+                  "key": "coverImage",
+                  "type": "file",
+                  "src": "/C:/Users/panka/Pictures/Screenshots/Screenshot 2026-02-26 103239.png"
+                },
+                {
+                  "key": "audioFile",
+                  "type": "file",
+                  "src": "/C:/Users/panka/Downloads/Telegram Desktop/Brain Rules.mp3"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/audiobooks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audiobooks"
+              ]
+            },
+            "description": "Requires Admin Token"
+          },
+          "response": [
+            {
+              "name": "201",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "Better Than Before",
+                      "type": "text"
+                    },
+                    {
+                      "key": "author",
+                      "value": "Gretchen Rubin",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "699fd458645d44c937ddc85b",
+                      "type": "text"
+                    },
+                    {
+                      "key": "description",
+                      "value": "Better Than Before (2015) by Gretchen Rubin is a self-help guide that argues the secret to changing habits is self-knowledge. It rejects \"one-size-fits-all\" solutions, instead offering a framework called the Four Tendencies—Upholder, Questioner, Obliger, and Rebel—to help you identify how you personally respond to expectations.\nThe book identifies 21 strategies to make or break habits, such as monitoring (tracking behavior), scheduling (setting specific times), and accountability (using external pressure). By understanding your own personality type, you can choose the specific tools that will actually work for your life.",
+                      "type": "text"
+                    },
+                    {
+                      "key": "coverImage",
+                      "type": "file",
+                      "src": "/C:/Users/panka/Pictures/Screenshots/Screenshot 2026-02-26 103251.png"
+                    },
+                    {
+                      "key": "audioFile",
+                      "type": "file",
+                      "src": "/C:/Users/panka/Downloads/Telegram Desktop/better than Before.mp3"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/audiobooks",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "audiobooks"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1302"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"516-zTIINWvYfcPmRU9T/ImRgEy18Gw\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:09:01 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"title\": \"Better Than Before\",\n        \"author\": \"Gretchen Rubin\",\n        \"description\": \"Better Than Before (2015) by Gretchen Rubin is a self-help guide that argues the secret to changing habits is self-knowledge. It rejects \\\"one-size-fits-all\\\" solutions, instead offering a framework called the Four Tendencies—Upholder, Questioner, Obliger, and Rebel—to help you identify how you personally respond to expectations.\\nThe book identifies 21 strategies to make or break habits, such as monitoring (tracking behavior), scheduling (setting specific times), and accountability (using external pressure). By understanding your own personality type, you can choose the specific tools that will actually work for your life.\",\n        \"categoryId\": \"699fd458645d44c937ddc85b\",\n        \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082538/audiobooks/w1se17e9tlzfuxnpqb91.mp3\",\n        \"audioPublicId\": \"audiobooks/w1se17e9tlzfuxnpqb91\",\n        \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082541/audiobooks/covers/fdccatxtvt2jfmggfqvs.png\",\n        \"coverImagePublicId\": \"audiobooks/covers/fdccatxtvt2jfmggfqvs\",\n        \"durationInSeconds\": 1442.142041,\n        \"likesCount\": 0,\n        \"commentsCount\": 0,\n        \"_id\": \"699fd56c645d44c937ddc868\",\n        \"createdAt\": \"2026-02-26T05:09:00.994Z\",\n        \"updatedAt\": \"2026-02-26T05:09:00.994Z\",\n        \"__v\": 0\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Audiobook by ID",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/audiobooks/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audiobooks",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ENTER_AUDIOBOOK_ID"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/audiobooks/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "audiobooks",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "699fd6a4645d44c937ddc86b"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1580"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"62c-XmP54D2m8aS1he8+qR0XC9cDwVM\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:40:55 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"699fd6a4645d44c937ddc86b\",\n        \"title\": \"Brain Rules\",\n        \"author\": \"Dr. John Medina\",\n        \"description\": \"Brain Rules (2008) by Dr. John Medina is a science-backed guide that explains how the human brain functions and how to apply this knowledge to improve work, school, and home life. A molecular biologist, Medina breaks down complex neuroscience into 12 \\\"rules\\\" that describe our brain's core abilities and limitations.\\nThe book's core premise is that modern environments—like high-stress cubicles and sedentary classrooms—are often designed in direct opposition to how our brains evolved to function. By understanding evolutionary biology, we can use our natural impulses to enhance learning, productivity, and health.\",\n        \"categoryId\": {\n            \"_id\": \"699fd464645d44c937ddc85e\",\n            \"name\": \"Psychology\"\n        },\n        \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082847/audiobooks/iml7jx3s3kgl0pg90fqj.mp3\",\n        \"audioPublicId\": \"audiobooks/iml7jx3s3kgl0pg90fqj\",\n        \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082851/audiobooks/covers/gyzt1hmdtwgh0kqpsdnj.png\",\n        \"coverImagePublicId\": \"audiobooks/covers/gyzt1hmdtwgh0kqpsdnj\",\n        \"durationInSeconds\": 1698.586122,\n        \"likesCount\": 2,\n        \"commentsCount\": 1,\n        \"createdAt\": \"2026-02-26T05:14:12.705Z\",\n        \"updatedAt\": \"2026-02-26T05:35:48.945Z\",\n        \"__v\": 0,\n        \"isLikedByUser\": true,\n        \"userComments\": [\n            {\n                \"_id\": \"699fdad5645d44c937ddc89a\",\n                \"user\": \"699fd166645d44c937ddc854\",\n                \"audiobook\": \"699fd6a4645d44c937ddc86b\",\n                \"text\": \"This is an good audiobook!\",\n                \"createdAt\": \"2026-02-26T05:32:05.246Z\",\n                \"updatedAt\": \"2026-02-26T05:32:05.246Z\",\n                \"__v\": 0\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Audiobook",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Brain Rules\",\n    \"author\": \"Dr. John Medina\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/audiobooks/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audiobooks",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "699fd6a4645d44c937ddc86b"
+                }
+              ]
+            },
+            "description": "Requires Admin Token"
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": \"Brain Rules\",\n    \"author\": \"Dr. John Medina\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/audiobooks/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "audiobooks",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "699fd6a4645d44c937ddc86b"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1284"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"504-8sBvXMOximX/+dY9Pmr9s7ioFQQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:43:58 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"699fd6a4645d44c937ddc86b\",\n        \"title\": \"Brain Rules\",\n        \"author\": \"Dr. John Medina\",\n        \"description\": \"Brain Rules (2008) by Dr. John Medina is a science-backed guide that explains how the human brain functions and how to apply this knowledge to improve work, school, and home life. A molecular biologist, Medina breaks down complex neuroscience into 12 \\\"rules\\\" that describe our brain's core abilities and limitations.\\nThe book's core premise is that modern environments—like high-stress cubicles and sedentary classrooms—are often designed in direct opposition to how our brains evolved to function. By understanding evolutionary biology, we can use our natural impulses to enhance learning, productivity, and health.\",\n        \"categoryId\": \"699fd464645d44c937ddc85e\",\n        \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082847/audiobooks/iml7jx3s3kgl0pg90fqj.mp3\",\n        \"audioPublicId\": \"audiobooks/iml7jx3s3kgl0pg90fqj\",\n        \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082851/audiobooks/covers/gyzt1hmdtwgh0kqpsdnj.png\",\n        \"coverImagePublicId\": \"audiobooks/covers/gyzt1hmdtwgh0kqpsdnj\",\n        \"durationInSeconds\": 1698.586122,\n        \"likesCount\": 2,\n        \"commentsCount\": 1,\n        \"createdAt\": \"2026-02-26T05:14:12.705Z\",\n        \"updatedAt\": \"2026-02-26T05:43:58.582Z\",\n        \"__v\": 0\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Audiobook",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/audiobooks/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audiobooks",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ENTER_AUDIOBOOK_ID"
+                }
+              ]
+            },
+            "description": "Requires Admin Token"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Interactions",
+      "item": [
+        {
+          "name": "Add Comment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"This is an good audiobook!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/interactions/audiobooks/:id/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions",
+                "audiobooks",
+                ":id",
+                "comments"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "699fd6a4645d44c937ddc86b"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"text\": \"This is an amazing audiobook!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/audiobooks/:id/comments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "audiobooks",
+                    ":id",
+                    "comments"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "699fd6a4645d44c937ddc86b"
+                    }
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "285"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"11d-++Row60oUMyA6MEGZLTYZK6G0/c\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:28:33 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"user\": {\n            \"_id\": \"699fd15d645d44c937ddc851\",\n            \"name\": \"Rahul Bhatt\"\n        },\n        \"audiobook\": \"699fd6a4645d44c937ddc86b\",\n        \"text\": \"This is an amazing audiobook!\",\n        \"_id\": \"699fda01645d44c937ddc881\",\n        \"createdAt\": \"2026-02-26T05:28:33.482Z\",\n        \"updatedAt\": \"2026-02-26T05:28:33.482Z\",\n        \"__v\": 0\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Comments",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/interactions/audiobooks/:id/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions",
+                "audiobooks",
+                ":id",
+                "comments"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ENTER_AUDIOBOOK_ID"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/audiobooks/:id/comments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "audiobooks",
+                    ":id",
+                    "comments"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "699fd6a4645d44c937ddc86b"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "344"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"158-lalF4vhcRNmUIQyhkMh8arz28UE\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:30:44 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"comments\": [\n            {\n                \"_id\": \"699fda01645d44c937ddc881\",\n                \"user\": {\n                    \"_id\": \"699fd15d645d44c937ddc851\",\n                    \"name\": \"Rahul Bhatt\"\n                },\n                \"audiobook\": \"699fd6a4645d44c937ddc86b\",\n                \"text\": \"This is an amazing audiobook!\",\n                \"createdAt\": \"2026-02-26T05:28:33.482Z\",\n                \"updatedAt\": \"2026-02-26T05:28:33.482Z\",\n                \"__v\": 0\n            }\n        ],\n        \"pagination\": {\n            \"total\": 1,\n            \"page\": 1,\n            \"pages\": 1\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Toggle Like",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/interactions/audiobooks/:id/like",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions",
+                "audiobooks",
+                ":id",
+                "like"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ENTER_AUDIOBOOK_ID"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/audiobooks/:id/like",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "audiobooks",
+                    ":id",
+                    "like"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "699fd6a4645d44c937ddc86b"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "38"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"26-ixB/f/7UkO8ok0dDFEfESr7vKzY\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:25:40 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"liked\": true\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/interactions/comments/:commentId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions",
+                "comments",
+                ":commentId"
+              ],
+              "variable": [
+                {
+                  "key": "commentId",
+                  "value": "699fd166645d44c937ddc854"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "403",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/comments/:commentId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "comments",
+                    ":commentId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "commentId",
+                      "value": "699fdad5645d44c937ddc89a"
+                    }
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'none'"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/html; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "554"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:35:21 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error</title>\n    </head>\n    <body>\n        <pre>Error: Not authorized to delete this comment\n            <br> &nbsp; &nbsp;at Function.deleteComment (C:\\Users\\panka\\Documents\\random\\BookSync\\audiobooks-server\\src\\services\\interaction.service.ts:30:33)\n            <br> &nbsp; &nbsp;at processTicksAndRejections (node:internal/process/task_queues:105:5)\n            <br> &nbsp; &nbsp;at async deleteComment (C:\\Users\\panka\\Documents\\random\\BookSync\\audiobooks-server\\src\\controllers\\interaction.controller.ts:21:13)\n        </pre>\n    </body>\n</html>"
+            },
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/comments/:commentId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "comments",
+                    ":commentId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "commentId",
+                      "value": "699fda01645d44c937ddc881"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "44"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2c-S3iiqrIbDUR9WStozdNoFPrwj9c\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:35:48 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Comment deleted\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "item": [
+        {
+          "name": "Update History Progress",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"audiobookId\": \"699fd6a4645d44c937ddc86b\",\n    \"progressInSeconds\": 190,\n    \"isCompleted\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/history/update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "history",
+                "update"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"audiobookId\": \"699fd6a4645d44c937ddc86b\",\n    \"progressInSeconds\": 190,\n    \"isCompleted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/history/update",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "history",
+                    "update"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "305"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"131-T1VNNCYfLjJTnw1B+EjvwLxihq8\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:45:43 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"699fde087fcd1622f55ae9bd\",\n        \"audiobook\": \"699fd6a4645d44c937ddc86b\",\n        \"user\": \"699fd15d645d44c937ddc851\",\n        \"__v\": 0,\n        \"createdAt\": \"2026-02-26T05:45:43.410Z\",\n        \"isCompleted\": false,\n        \"lastListenedAt\": \"2026-02-26T05:45:43.409Z\",\n        \"progressInSeconds\": 190,\n        \"updatedAt\": \"2026-02-26T05:45:43.410Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get User History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "history"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feed",
+      "item": [
+        {
+          "name": "Get Home Feed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/feed/home",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feed",
+                "home"
+              ]
+            },
+            "description": "Optional Auth: Token can be passed to get 'continue listening' personalized feed."
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/feed/home",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "feed",
+                    "home"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "5970"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1752-7YXlpT1tO8RAdhvtqWbV/nWHEGo\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:23:03 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"continueListening\": [],\n        \"latest\": [\n            {\n                \"_id\": \"699fd6a4645d44c937ddc86b\",\n                \"title\": \"Brain Rules\",\n                \"author\": \"Dr. John Medina\",\n                \"description\": \"Brain Rules (2008) by Dr. John Medina is a science-backed guide that explains how the human brain functions and how to apply this knowledge to improve work, school, and home life. A molecular biologist, Medina breaks down complex neuroscience into 12 \\\"rules\\\" that describe our brain's core abilities and limitations.\\nThe book's core premise is that modern environments—like high-stress cubicles and sedentary classrooms—are often designed in direct opposition to how our brains evolved to function. By understanding evolutionary biology, we can use our natural impulses to enhance learning, productivity, and health.\",\n                \"categoryId\": {\n                    \"_id\": \"699fd464645d44c937ddc85e\",\n                    \"name\": \"Psychology\"\n                },\n                \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082847/audiobooks/iml7jx3s3kgl0pg90fqj.mp3\",\n                \"audioPublicId\": \"audiobooks/iml7jx3s3kgl0pg90fqj\",\n                \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082851/audiobooks/covers/gyzt1hmdtwgh0kqpsdnj.png\",\n                \"coverImagePublicId\": \"audiobooks/covers/gyzt1hmdtwgh0kqpsdnj\",\n                \"durationInSeconds\": 1698.586122,\n                \"likesCount\": 0,\n                \"commentsCount\": 0,\n                \"createdAt\": \"2026-02-26T05:14:12.705Z\",\n                \"updatedAt\": \"2026-02-26T05:14:12.705Z\",\n                \"__v\": 0\n            },\n            {\n                \"_id\": \"699fd56c645d44c937ddc868\",\n                \"title\": \"Better Than Before\",\n                \"author\": \"Gretchen Rubin\",\n                \"description\": \"Better Than Before (2015) by Gretchen Rubin is a self-help guide that argues the secret to changing habits is self-knowledge. It rejects \\\"one-size-fits-all\\\" solutions, instead offering a framework called the Four Tendencies—Upholder, Questioner, Obliger, and Rebel—to help you identify how you personally respond to expectations.\\nThe book identifies 21 strategies to make or break habits, such as monitoring (tracking behavior), scheduling (setting specific times), and accountability (using external pressure). By understanding your own personality type, you can choose the specific tools that will actually work for your life.\",\n                \"categoryId\": {\n                    \"_id\": \"699fd458645d44c937ddc85b\",\n                    \"name\": \"Self-Help\"\n                },\n                \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082538/audiobooks/w1se17e9tlzfuxnpqb91.mp3\",\n                \"audioPublicId\": \"audiobooks/w1se17e9tlzfuxnpqb91\",\n                \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082541/audiobooks/covers/fdccatxtvt2jfmggfqvs.png\",\n                \"coverImagePublicId\": \"audiobooks/covers/fdccatxtvt2jfmggfqvs\",\n                \"durationInSeconds\": 1442.142041,\n                \"likesCount\": 0,\n                \"commentsCount\": 0,\n                \"createdAt\": \"2026-02-26T05:09:00.994Z\",\n                \"updatedAt\": \"2026-02-26T05:09:00.994Z\",\n                \"__v\": 0\n            }\n        ],\n        \"popular\": [\n            {\n                \"_id\": \"699fd56c645d44c937ddc868\",\n                \"title\": \"Better Than Before\",\n                \"author\": \"Gretchen Rubin\",\n                \"description\": \"Better Than Before (2015) by Gretchen Rubin is a self-help guide that argues the secret to changing habits is self-knowledge. It rejects \\\"one-size-fits-all\\\" solutions, instead offering a framework called the Four Tendencies—Upholder, Questioner, Obliger, and Rebel—to help you identify how you personally respond to expectations.\\nThe book identifies 21 strategies to make or break habits, such as monitoring (tracking behavior), scheduling (setting specific times), and accountability (using external pressure). By understanding your own personality type, you can choose the specific tools that will actually work for your life.\",\n                \"categoryId\": {\n                    \"_id\": \"699fd458645d44c937ddc85b\",\n                    \"name\": \"Self-Help\"\n                },\n                \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082538/audiobooks/w1se17e9tlzfuxnpqb91.mp3\",\n                \"audioPublicId\": \"audiobooks/w1se17e9tlzfuxnpqb91\",\n                \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082541/audiobooks/covers/fdccatxtvt2jfmggfqvs.png\",\n                \"coverImagePublicId\": \"audiobooks/covers/fdccatxtvt2jfmggfqvs\",\n                \"durationInSeconds\": 1442.142041,\n                \"likesCount\": 0,\n                \"commentsCount\": 0,\n                \"createdAt\": \"2026-02-26T05:09:00.994Z\",\n                \"updatedAt\": \"2026-02-26T05:09:00.994Z\",\n                \"__v\": 0\n            },\n            {\n                \"_id\": \"699fd6a4645d44c937ddc86b\",\n                \"title\": \"Brain Rules\",\n                \"author\": \"Dr. John Medina\",\n                \"description\": \"Brain Rules (2008) by Dr. John Medina is a science-backed guide that explains how the human brain functions and how to apply this knowledge to improve work, school, and home life. A molecular biologist, Medina breaks down complex neuroscience into 12 \\\"rules\\\" that describe our brain's core abilities and limitations.\\nThe book's core premise is that modern environments—like high-stress cubicles and sedentary classrooms—are often designed in direct opposition to how our brains evolved to function. By understanding evolutionary biology, we can use our natural impulses to enhance learning, productivity, and health.\",\n                \"categoryId\": {\n                    \"_id\": \"699fd464645d44c937ddc85e\",\n                    \"name\": \"Psychology\"\n                },\n                \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082847/audiobooks/iml7jx3s3kgl0pg90fqj.mp3\",\n                \"audioPublicId\": \"audiobooks/iml7jx3s3kgl0pg90fqj\",\n                \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082851/audiobooks/covers/gyzt1hmdtwgh0kqpsdnj.png\",\n                \"coverImagePublicId\": \"audiobooks/covers/gyzt1hmdtwgh0kqpsdnj\",\n                \"durationInSeconds\": 1698.586122,\n                \"likesCount\": 0,\n                \"commentsCount\": 0,\n                \"createdAt\": \"2026-02-26T05:14:12.705Z\",\n                \"updatedAt\": \"2026-02-26T05:14:12.705Z\",\n                \"__v\": 0\n            }\n        ],\n        \"categories\": [\n            {\n                \"_id\": \"699fd458645d44c937ddc85b\",\n                \"name\": \"Self-Help\",\n                \"description\": \"Self-Help\",\n                \"createdAt\": \"2026-02-26T05:04:24.270Z\",\n                \"updatedAt\": \"2026-02-26T05:04:24.270Z\",\n                \"__v\": 0\n            },\n            {\n                \"_id\": \"699fd464645d44c937ddc85e\",\n                \"name\": \"Psychology\",\n                \"description\": \"Psychology\",\n                \"createdAt\": \"2026-02-26T05:04:36.489Z\",\n                \"updatedAt\": \"2026-02-26T05:04:36.489Z\",\n                \"__v\": 0\n            },\n            {\n                \"_id\": \"699fd46f645d44c937ddc861\",\n                \"name\": \"Personal Development\",\n                \"description\": \"Personal Development\",\n                \"createdAt\": \"2026-02-26T05:04:47.384Z\",\n                \"updatedAt\": \"2026-02-26T05:04:47.384Z\",\n                \"__v\": 0\n            },\n            {\n                \"_id\": \"699fd4ac645d44c937ddc864\",\n                \"name\": \"Neuroscience\",\n                \"description\": \"Neuroscience\",\n                \"createdAt\": \"2026-02-26T05:05:48.188Z\",\n                \"updatedAt\": \"2026-02-26T05:05:48.188Z\",\n                \"__v\": 0\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/feed/search?q=brain",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feed",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "brain"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/feed/search?q=brain",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "feed",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "brain"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1345"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"541-lLQ/wodVrVwboz+jNPMWF9blyaY\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 26 Feb 2026 05:25:05 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"audiobooks\": [\n            {\n                \"_id\": \"699fd6a4645d44c937ddc86b\",\n                \"title\": \"Brain Rules\",\n                \"author\": \"Dr. John Medina\",\n                \"description\": \"Brain Rules (2008) by Dr. John Medina is a science-backed guide that explains how the human brain functions and how to apply this knowledge to improve work, school, and home life. A molecular biologist, Medina breaks down complex neuroscience into 12 \\\"rules\\\" that describe our brain's core abilities and limitations.\\nThe book's core premise is that modern environments—like high-stress cubicles and sedentary classrooms—are often designed in direct opposition to how our brains evolved to function. By understanding evolutionary biology, we can use our natural impulses to enhance learning, productivity, and health.\",\n                \"categoryId\": {\n                    \"_id\": \"699fd464645d44c937ddc85e\",\n                    \"name\": \"Psychology\"\n                },\n                \"audioUrl\": \"https://res.cloudinary.com/dvrlt0x85/video/upload/v1772082847/audiobooks/iml7jx3s3kgl0pg90fqj.mp3\",\n                \"audioPublicId\": \"audiobooks/iml7jx3s3kgl0pg90fqj\",\n                \"coverImageUrl\": \"https://res.cloudinary.com/dvrlt0x85/image/upload/v1772082851/audiobooks/covers/gyzt1hmdtwgh0kqpsdnj.png\",\n                \"coverImagePublicId\": \"audiobooks/covers/gyzt1hmdtwgh0kqpsdnj\",\n                \"durationInSeconds\": 1698.586122,\n                \"likesCount\": 0,\n                \"commentsCount\": 0,\n                \"createdAt\": \"2026-02-26T05:14:12.705Z\",\n                \"updatedAt\": \"2026-02-26T05:14:12.705Z\",\n                \"__v\": 0\n            }\n        ],\n        \"categories\": []\n    }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
