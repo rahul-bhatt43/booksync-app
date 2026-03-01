@@ -115,6 +115,26 @@ export default function PlayerScreen() {
         detailsDrawerRef.current?.present();
     };
 
+    const handleCommentAdded = () => {
+        setBookData((prev: any) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                commentsCount: (prev.commentsCount || 0) + 1
+            };
+        });
+    };
+
+    const handleCommentDeleted = () => {
+        setBookData((prev: any) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                commentsCount: Math.max(0, (prev.commentsCount || 0) - 1)
+            };
+        });
+    };
+
     // The book displaying on screen
     const displayBook = currentTrack?.id === bookId ? currentTrack : (bookData ? {
         id: bookData._id,
@@ -390,7 +410,12 @@ export default function PlayerScreen() {
             </View>
 
             {/* Render Bottom Sheet Modal locally */}
-            <CommentsDrawer ref={commentsDrawerRef} bookId={bookId} />
+            <CommentsDrawer
+                ref={commentsDrawerRef}
+                bookId={bookId}
+                onCommentAdded={handleCommentAdded}
+                onCommentDeleted={handleCommentDeleted}
+            />
             <DetailsDrawer ref={detailsDrawerRef} bookData={bookData} />
         </SafeAreaView>
     );

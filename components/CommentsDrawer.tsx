@@ -8,9 +8,11 @@ import { ActivityIndicator, KeyboardAvoidingView, Platform, RefreshControl, Styl
 
 interface CommentsDrawerProps {
     bookId: string;
+    onCommentAdded?: () => void;
+    onCommentDeleted?: () => void;
 }
 
-const CommentsDrawer = forwardRef<BottomSheetModal, CommentsDrawerProps>(({ bookId }, ref) => {
+const CommentsDrawer = forwardRef<BottomSheetModal, CommentsDrawerProps>(({ bookId, onCommentAdded, onCommentDeleted }, ref) => {
     const { user } = useAuth();
     const snapPoints = useMemo(() => ['50%', '90%'], []);
 
@@ -51,6 +53,7 @@ const CommentsDrawer = forwardRef<BottomSheetModal, CommentsDrawerProps>(({ book
             const addedComment = response.data.data;
             setComments(prev => [addedComment, ...prev]);
             setNewComment('');
+            onCommentAdded?.();
         } catch (error) {
             console.error('Error adding comment', error);
         } finally {
@@ -62,6 +65,7 @@ const CommentsDrawer = forwardRef<BottomSheetModal, CommentsDrawerProps>(({ book
         try {
             await apiClient.delete(`/interactions/comments/${commentId}`);
             setComments(prev => prev.filter(c => c._id !== commentId));
+            onCommentDeleted?.();
         } catch (error) {
             console.error('Error deleting comment', error);
         }
