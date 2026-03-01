@@ -34,7 +34,11 @@ export default function PlayerScreen() {
         loadAndPlayTrack,
         position,
         duration,
-        seekTrack
+        seekTrack,
+        playbackRate,
+        setPlaybackRate,
+        sleepTimerRemaining,
+        setSleepTimer
     } = useAudio();
 
     const bookId = typeof id === 'string' ? id : '';
@@ -152,6 +156,32 @@ export default function PlayerScreen() {
     };
 
     const progressPercent = duration > 0 ? (position / duration) * 100 : 0;
+
+    const handleSpeedChange = () => {
+        const nextSpeed = playbackRate === 1.0 ? 1.25 : playbackRate === 1.25 ? 1.5 : playbackRate === 1.5 ? 2.0 : 1.0;
+        setPlaybackRate(nextSpeed);
+    };
+
+    const handleSleepTimerPress = () => {
+        if (sleepTimerRemaining === null) {
+            setSleepTimer(15);
+        } else if (sleepTimerRemaining <= 15 * 60) {
+            setSleepTimer(30);
+        } else if (sleepTimerRemaining <= 30 * 60) {
+            setSleepTimer(45);
+        } else if (sleepTimerRemaining <= 45 * 60) {
+            setSleepTimer(60);
+        } else {
+            setSleepTimer(null);
+        }
+    };
+
+    const formatSleepTimer = (seconds: number | null) => {
+        if (seconds === null) return 'Sleep';
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-zinc-950">
@@ -281,8 +311,11 @@ export default function PlayerScreen() {
 
                                 {/* Secondary Controls - Bottom Navigation Style */}
                                 <Animated.View entering={FadeInDown.delay(400).duration(800)} exiting={FadeOutDown.duration(300)} className="flex-row items-center border-t border-zinc-800/80 bg-zinc-900/50 absolute bottom-0 left-0 right-0 h-20 px-8 pb-0 justify-between rounded-t-3xl">
-                                    <TouchableOpacity className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100">
-                                        <Text className="text-white font-inter-bold text-lg mb-1">1.0x</Text>
+                                    <TouchableOpacity
+                                        className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100"
+                                        onPress={handleSpeedChange}
+                                    >
+                                        <Text className="text-white font-inter-bold text-lg mb-1">{playbackRate}x</Text>
                                         <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Speed</Text>
                                     </TouchableOpacity>
 
@@ -294,9 +327,14 @@ export default function PlayerScreen() {
                                         <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Details</Text>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100">
-                                        <Clock size={26} color="#f4f4f5" className="mb-1.5" />
-                                        <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Sleep</Text>
+                                    <TouchableOpacity
+                                        className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100"
+                                        onPress={handleSleepTimerPress}
+                                    >
+                                        <Clock size={26} color={sleepTimerRemaining ? "#f59e0b" : "#f4f4f5"} className="mb-1.5" />
+                                        <Text className={`font-inter-medium text-[10px] uppercase tracking-wider ${sleepTimerRemaining ? 'text-amber-500' : 'text-zinc-500'}`}>
+                                            {formatSleepTimer(sleepTimerRemaining)}
+                                        </Text>
                                     </TouchableOpacity>
                                 </Animated.View>
                             </>

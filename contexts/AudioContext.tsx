@@ -20,6 +20,10 @@ interface AudioContextType {
     currentTrack: TrackParams | null;
     position: number;
     duration: number;
+    playbackRate: number;
+    sleepTimerRemaining: number | null;
+    setPlaybackRate: (rate: number) => Promise<void>;
+    setSleepTimer: (minutes: number | null) => void;
     loadAndPlayTrack: (track: TrackParams, initialPositionMillis?: number) => Promise<void>;
     playTrack: () => Promise<void>;
     pauseTrack: () => Promise<void>;
@@ -37,19 +41,32 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     const [currentTrack, setCurrentTrack] = useState<TrackParams | null>(null);
     const [position, setPosition] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [playbackRate, setPlaybackRateState] = useState<number>(1.0);
+    const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
 
     // Use refs for latest state values needed in callbacks without triggering re-creation
     const positionRef = useRef(0);
     const durationRef = useRef(0);
     const isPlayingRef = useRef(false);
     const currentTrackRef = useRef<TrackParams | null>(null);
+    const soundRef = useRef<Audio.Sound | null>(null);
+    const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
         positionRef.current = position;
         durationRef.current = duration;
         isPlayingRef.current = isPlaying;
         currentTrackRef.current = currentTrack;
-    }, [position, duration, isPlaying, currentTrack]);
+        soundRef.current = sound;
+    }, [position, duration, isPlaying, currentTrack, sound]);
+
+    useEffect(() => {
+        return () => {
+            if (sleepTimerRef.current) {
+                clearInterval(sleepTimerRef.current);
+            }
+        };
+    }, []);
 
     const syncHistory = async (forceCompleted = false) => {
         const track = currentTrackRef.current;
@@ -115,7 +132,12 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
             const { sound: newSound } = await Audio.Sound.createAsync(
                 { uri: track.audioUrl },
-                { shouldPlay: true, positionMillis: initialPositionMillis || 0 },
+                {
+                    shouldPlay: true,
+                    positionMillis: initialPositionMillis || 0,
+                    rate: playbackRate,
+                    shouldCorrectPitch: true
+                },
                 onPlaybackStatusUpdate
             );
 
@@ -127,6 +149,54 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const setPlaybackRate = async (rate: number) => {
+        if (sound) {
+            await sound.setRateAsync(rate, true);
+        }
+        setPlaybackRateState(rate);
+    };
+
+    const setSleepTimer = (minutes: number | null) => {
+        if (sleepTimerRef.current) {
+            clearInterval(sleepTimerRef.current);
+            sleepTimerRef.current = null;
+        }
+
+        if (minutes === null) {
+            setSleepTimerRemaining(null);
+            return;
+        }
+
+        let secondsRemaining = minutes * 60;
+        setSleepTimerRemaining(secondsRemaining);
+
+        sleepTimerRef.current = setInterval(async () => {
+            secondsRemaining -= 1;
+            setSleepTimerRemaining(secondsRemaining);
+
+            if (secondsRemaining <= 0) {
+                if (sleepTimerRef.current) {
+                    clearInterval(sleepTimerRef.current);
+                    sleepTimerRef.current = null;
+                }
+                setSleepTimerRemaining(null);
+
+                if (soundRef.current) {
+                    try {
+                        const status = await soundRef.current.getStatusAsync();
+                        if (status.isLoaded) {
+                            await soundRef.current.pauseAsync();
+                            setIsPlaying(false);
+                            await syncHistory();
+                        }
+                    } catch (e) {
+                        console.error("Error in sleep timer", e);
+                    }
+                }
+            }
+        }, 1000);
     };
 
     const playTrack = async () => {
@@ -192,6 +262,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
                 currentTrack,
                 position,
                 duration,
+                playbackRate,
+                sleepTimerRemaining,
+                setPlaybackRate,
+                setSleepTimer,
                 loadAndPlayTrack,
                 playTrack,
                 pauseTrack,

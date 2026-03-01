@@ -13,6 +13,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 import NetworkIndicator from '@/components/NetworkIndicator';
+import UpdateIndicator from '@/components/UpdateIndicator';
 import { useColorScheme } from '@/components/useColorScheme';
 import { AudioProvider } from '@/contexts/AudioContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
@@ -110,6 +111,7 @@ function RootLayoutNav() {
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           </Stack>
           <NetworkIndicator />
+          <UpdateIndicator />
         </BottomSheetModalProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
