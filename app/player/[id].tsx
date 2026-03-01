@@ -1,10 +1,13 @@
 import apiClient from '@/api/client';
+import CommentsDrawer from '@/components/CommentsDrawer';
+import DetailsDrawer from '@/components/DetailsDrawer';
 import Skeleton from '@/components/Skeleton';
 import { useAudio } from '@/contexts/AudioContext';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ChevronDown, Clock, Heart, ListMusic, MessageCircle, Pause, Play, RotateCcw, RotateCw } from 'lucide-react-native';
-import { useCallback, useEffect, useState } from 'react';
-import { Dimensions, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ChevronDown, Clock, Heart, Info, MessageCircle, Pause, Play, RotateCcw, RotateCw } from 'lucide-react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeOut, FadeOutDown, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -40,6 +43,9 @@ export default function PlayerScreen() {
     const [loading, setLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+
+    const commentsDrawerRef = useRef<BottomSheetModal>(null);
+    const detailsDrawerRef = useRef<BottomSheetModal>(null);
 
     const initialPositionSec = Number(initialPositionParam) || 0;
 
@@ -98,8 +104,11 @@ export default function PlayerScreen() {
     };
 
     const handleOpenComments = () => {
-        // Open comments modal, we can route to a new modal screen
-        router.push({ pathname: '/modal', params: { bookId } });
+        commentsDrawerRef.current?.present();
+    };
+
+    const handleOpenDetails = () => {
+        detailsDrawerRef.current?.present();
     };
 
     // The book displaying on screen
@@ -146,12 +155,7 @@ export default function PlayerScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-zinc-950">
-            <ScrollView
-                className="flex-1"
-                contentContainerStyle={{ flexGrow: 1 }}
-                showsVerticalScrollIndicator={false}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />}
-            >
+            <View className="flex-1 pb-20 justify-between">
                 {isVisible && (
                     <>
                         {/* Dynamic Ambient Background Blur */}
@@ -207,11 +211,11 @@ export default function PlayerScreen() {
                         ) : (
                             <>
                                 {/* Cover Art */}
-                                <Animated.View entering={SlideInDown.duration(600).springify()} exiting={SlideOutDown.duration(300)} className="items-center px-10 mt-2 mb-10 shadow-[0_30px_60px_rgba(245,158,11,0.2)]">
+                                <Animated.View entering={SlideInDown.duration(600).springify()} exiting={SlideOutDown.duration(300)} className="items-center px-10 mt-0 mb-4 shadow-[0_30px_60px_rgba(245,158,11,0.2)]">
                                     <Image
                                         source={{ uri: displayBook.coverUrl }}
-                                        className="w-full aspect-square max-w-[340px] rounded-3xl bg-zinc-800 border border-zinc-800/50"
-                                        resizeMode="cover"
+                                        className="w-full aspect-[3/4] max-w-[280px] max-h-[360px] rounded-3xl bg-zinc-800 border border-zinc-800/50"
+                                        resizeMode="contain"
                                     />
                                 </Animated.View>
 
@@ -226,7 +230,7 @@ export default function PlayerScreen() {
                                 </Animated.View>
 
                                 {/* Progress Scrubber */}
-                                <Animated.View entering={FadeInDown.delay(200).duration(600)} exiting={FadeOutDown.duration(300)} className="px-8 mb-10 w-full">
+                                <Animated.View entering={FadeInDown.delay(200).duration(600)} exiting={FadeOutDown.duration(300)} className="px-8 mb-2 w-full">
                                     {/* Scrubber Line container with larger touch area */}
                                     <View className="py-2 justify-center mb-1">
                                         <View className="h-2 bg-zinc-800 rounded-full w-full">
@@ -251,7 +255,7 @@ export default function PlayerScreen() {
                                 </Animated.View>
 
                                 {/* Main Controls */}
-                                <Animated.View entering={FadeInDown.delay(300).duration(600)} exiting={FadeOutDown.duration(300)} className="px-10 flex-row justify-between items-center mb-12">
+                                <Animated.View entering={FadeInDown.delay(300).duration(600)} exiting={FadeOutDown.duration(300)} className="px-10 flex-row justify-between items-center mb-6">
                                     <TouchableOpacity onPress={handleSeekBack} className="items-center justify-center relative w-16 h-16 rounded-full bg-zinc-800/40 active:bg-zinc-800/80 transition-colors">
                                         <RotateCcw size={32} color="#e4e4e7" strokeWidth={1.5} />
                                         <Text className="absolute text-zinc-300 font-inter-bold text-[10px] mt-1">15</Text>
@@ -276,15 +280,18 @@ export default function PlayerScreen() {
                                 </Animated.View>
 
                                 {/* Secondary Controls - Bottom Navigation Style */}
-                                <Animated.View entering={FadeInDown.delay(400).duration(800)} exiting={FadeOutDown.duration(300)} className="flex-row items-center border-t border-zinc-800/80 bg-zinc-900/50 absolute bottom-0 left-0 right-0 h-24 px-8 pb-6 justify-between rounded-t-3xl">
+                                <Animated.View entering={FadeInDown.delay(400).duration(800)} exiting={FadeOutDown.duration(300)} className="flex-row items-center border-t border-zinc-800/80 bg-zinc-900/50 absolute bottom-0 left-0 right-0 h-20 px-8 pb-0 justify-between rounded-t-3xl">
                                     <TouchableOpacity className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100">
                                         <Text className="text-white font-inter-bold text-lg mb-1">1.0x</Text>
                                         <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Speed</Text>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100 border-x border-zinc-800/50">
-                                        <ListMusic size={26} color="#f4f4f5" className="mb-1.5" />
-                                        <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Chapters</Text>
+                                    <TouchableOpacity
+                                        className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100 border-x border-zinc-800/50"
+                                        onPress={handleOpenDetails}
+                                    >
+                                        <Info size={26} color="#f4f4f5" className="mb-1.5" />
+                                        <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Details</Text>
                                     </TouchableOpacity>
 
                                     <TouchableOpacity className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100">
@@ -296,7 +303,11 @@ export default function PlayerScreen() {
                         )}
                     </>
                 )}
-            </ScrollView>
+            </View>
+
+            {/* Render Bottom Sheet Modal locally */}
+            <CommentsDrawer ref={commentsDrawerRef} bookId={bookId} />
+            <DetailsDrawer ref={detailsDrawerRef} bookData={bookData} />
         </SafeAreaView>
     );
 }
