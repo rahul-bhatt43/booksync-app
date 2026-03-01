@@ -14,6 +14,8 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const firstName = user?.name?.split(' ')[0] || 'Listener';
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 
   const [feedData, setFeedData] = useState<{
     continueListening: any[];
@@ -147,7 +149,7 @@ export default function HomeScreen() {
         {/* Header */}
         <Animated.View entering={FadeIn.duration(600)} className="px-6 pt-6 pb-8 flex-row justify-between items-start">
           <View>
-            <Text className="text-zinc-400 font-inter-medium text-xs tracking-widest mb-1 uppercase">Good morning,</Text>
+            <Text className="text-zinc-400 font-inter-medium text-xs tracking-widest mb-1 uppercase">{greeting},</Text>
             <Text className="text-white font-inter-bold text-3xl tracking-tight">{firstName}</Text>
           </View>
           <View className="flex-row items-center space-x-4">
