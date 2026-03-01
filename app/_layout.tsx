@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import "../global.css";
 
+import NetworkIndicator from '@/components/NetworkIndicator';
 import { useColorScheme } from '@/components/useColorScheme';
 import { AudioProvider } from '@/contexts/AudioContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
@@ -101,6 +102,7 @@ function RootLayoutNav() {
         <Stack.Screen name="player/[id]" options={{ presentation: 'fullScreenModal', headerShown: false, animation: 'ios_from_left' }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
+      <NetworkIndicator />
     </ThemeProvider>
   );
 }
