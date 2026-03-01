@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     listContainer: {
         padding: 20,
         paddingBottom: 40,
+        paddingTop: 80,
     },
     emptyText: {
         textAlign: 'center',

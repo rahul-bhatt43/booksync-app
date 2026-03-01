@@ -240,74 +240,120 @@ export default function PlayerScreen() {
                             </View>
                         ) : (
                             <>
-                                {/* Cover Art */}
-                                <Animated.View entering={SlideInDown.duration(600).springify()} exiting={SlideOutDown.duration(300)} className="items-center px-10 mt-0 mb-4 shadow-[0_30px_60px_rgba(245,158,11,0.2)]">
-                                    <Image
-                                        source={{ uri: displayBook.coverUrl }}
-                                        className="w-full aspect-[3/4] max-w-[280px] max-h-[360px] rounded-3xl bg-zinc-800 border border-zinc-800/50"
-                                        resizeMode="contain"
-                                    />
-                                </Animated.View>
+                                {/* Content Wrapper (Flex to fill remaining space minus absolute bottom bar) */}
+                                <View className="flex-1 justify-center pb-2">
+                                    {/* Cover Art */}
+                                    <Animated.View entering={SlideInDown.duration(600).springify()} exiting={SlideOutDown.duration(300)} className="flex-1 items-center justify-center px-10 mb-4 shadow-[0_30px_60px_rgba(245,158,11,0.2)]">
+                                        <Image
+                                            source={{ uri: displayBook.coverUrl }}
+                                            className="w-full h-full max-w-[280px] rounded-3xl bg-zinc-800 border border-zinc-800/50"
+                                            resizeMode="contain"
+                                            style={{ aspectRatio: 3 / 4 }}
+                                        />
+                                    </Animated.View>
 
-                                {/* Book Info */}
-                                <Animated.View entering={FadeInDown.delay(100).duration(600)} exiting={FadeOutDown.duration(300)} className="px-8 items-center mb-8">
-                                    <Text className="text-white font-inter-bold text-3xl mb-2 text-center" numberOfLines={2}>
-                                        {displayBook.title}
-                                    </Text>
-                                    <Text className="text-amber-500 font-inter-medium text-lg">
-                                        {displayBook.author.name}
-                                    </Text>
-                                </Animated.View>
+                                    {/* Book Info */}
+                                    <Animated.View entering={FadeInDown.delay(100).duration(600)} exiting={FadeOutDown.duration(300)} className="px-8 items-center mb-4 mt-auto">
+                                        <Text className="text-white font-inter-bold text-2xl mb-1 text-center" numberOfLines={2}>
+                                            {displayBook.title}
+                                        </Text>
 
-                                {/* Progress Scrubber */}
-                                <Animated.View entering={FadeInDown.delay(200).duration(600)} exiting={FadeOutDown.duration(300)} className="px-8 mb-2 w-full">
-                                    {/* Scrubber Line container with larger touch area */}
-                                    <View className="py-2 justify-center mb-1">
-                                        <View className="h-2 bg-zinc-800 rounded-full w-full">
-                                            <View className="h-full bg-amber-500 rounded-full relative" style={{ width: `${progressPercent}%` }}>
-                                                {/* Larger handle for better touch ergonomics */}
-                                                <View className="absolute -right-3 top-1/2 -mt-3 w-6 h-6 bg-white rounded-full shadow-md items-center justify-center">
-                                                    <View className="w-2 h-2 rounded-full bg-amber-500" />
+                                        <TouchableOpacity
+                                            activeOpacity={0.7}
+                                            onPress={() => {
+                                                const authorId = bookData?.authorId?._id || displayBook.author._id;
+                                                const authorName = bookData?.authorId?.name || displayBook.author.name;
+                                                if (authorId) {
+                                                    handleClose();
+                                                    setTimeout(() => router.push(`/collection?type=author&id=${authorId}&name=${encodeURIComponent(authorName)}`), 300);
+                                                }
+                                            }}
+                                        >
+                                            <Text className="text-amber-500 font-inter-medium text-base mb-1">
+                                                {bookData?.authorId?.name || displayBook.author.name}
+                                            </Text>
+                                        </TouchableOpacity>
+
+                                        {bookData?.narratorId?.name && (
+                                            <TouchableOpacity
+                                                activeOpacity={0.7}
+                                                onPress={() => {
+                                                    handleClose();
+                                                    setTimeout(() => router.push(`/collection?type=narrator&id=${bookData.narratorId._id}&name=${encodeURIComponent(bookData.narratorId.name)}`), 300);
+                                                }}
+                                            >
+                                                <Text className="text-zinc-400 font-inter-medium text-xs mb-2">
+                                                    Narrated by <Text className="text-zinc-300 font-inter-semibold">{bookData.narratorId.name}</Text>
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )}
+
+                                        {bookData?.categoryId?.name && (
+                                            <TouchableOpacity
+                                                activeOpacity={0.7}
+                                                className="bg-zinc-800/60 px-3 py-1 rounded-full border border-zinc-700/50 mt-1"
+                                                onPress={() => {
+                                                    handleClose();
+                                                    setTimeout(() => router.push(`/collection?type=category&id=${bookData.categoryId._id}&name=${encodeURIComponent(bookData.categoryId.name)}`), 300);
+                                                }}
+                                            >
+                                                <Text className="text-zinc-300 font-inter-medium text-[10px] tracking-wide">
+                                                    {bookData.categoryId.name}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )}
+                                    </Animated.View>
+
+                                    {/* Progress Scrubber */}
+                                    <Animated.View entering={FadeInDown.delay(200).duration(600)} exiting={FadeOutDown.duration(300)} className="px-8 mb-3 w-full">
+                                        {/* Scrubber Line container with larger touch area */}
+                                        <View className="py-2 justify-center mb-1">
+                                            <View className="h-2 bg-zinc-800 rounded-full w-full">
+                                                <View className="h-full bg-amber-500 rounded-full relative" style={{ width: `${progressPercent}%` }}>
+                                                    {/* Larger handle for better touch ergonomics */}
+                                                    <View className="absolute -right-3 top-1/2 -mt-3 w-6 h-6 bg-white rounded-full shadow-md items-center justify-center">
+                                                        <View className="w-2 h-2 rounded-full bg-amber-500" />
+                                                    </View>
                                                 </View>
                                             </View>
                                         </View>
-                                    </View>
 
-                                    {/* Timestamps */}
-                                    <View className="flex-row justify-between w-full mt-1">
-                                        <Text className="text-zinc-400 font-inter-medium text-xs">
-                                            {formatTime(position)}
-                                        </Text>
-                                        <Text className="text-zinc-400 font-inter-medium text-xs">
-                                            -{formatTime(Math.max(0, duration - position))}
-                                        </Text>
-                                    </View>
-                                </Animated.View>
+                                        {/* Timestamps */}
+                                        <View className="flex-row justify-between w-full mt-1">
+                                            <Text className="text-zinc-400 font-inter-medium text-xs">
+                                                {formatTime(position)}
+                                            </Text>
+                                            <Text className="text-zinc-400 font-inter-medium text-xs">
+                                                -{formatTime(Math.max(0, duration - position))}
+                                            </Text>
+                                        </View>
+                                    </Animated.View>
 
-                                {/* Main Controls */}
-                                <Animated.View entering={FadeInDown.delay(300).duration(600)} exiting={FadeOutDown.duration(300)} className="px-10 flex-row justify-between items-center mb-6">
-                                    <TouchableOpacity onPress={handleSeekBack} className="items-center justify-center relative w-16 h-16 rounded-full bg-zinc-800/40 active:bg-zinc-800/80 transition-colors">
-                                        <RotateCcw size={32} color="#e4e4e7" strokeWidth={1.5} />
-                                        <Text className="absolute text-zinc-300 font-inter-bold text-[10px] mt-1">15</Text>
-                                    </TouchableOpacity>
+                                    {/* Main Controls */}
+                                    <Animated.View entering={FadeInDown.delay(300).duration(600)} exiting={FadeOutDown.duration(300)} className="px-10 flex-row justify-between items-center">
+                                        <TouchableOpacity onPress={handleSeekBack} className="items-center justify-center relative w-[60px] h-[60px] rounded-full bg-zinc-800/40 active:bg-zinc-800/80 transition-colors">
+                                            <RotateCcw size={28} color="#e4e4e7" strokeWidth={1.5} />
+                                            <Text className="absolute text-zinc-300 font-inter-bold text-[9px] mt-1">15</Text>
+                                        </TouchableOpacity>
 
-                                    <TouchableOpacity
-                                        className="w-24 h-24 rounded-full bg-amber-500 items-center justify-center shadow-[0_10px_40px_rgba(245,158,11,0.4)]"
-                                        activeOpacity={0.8}
-                                        onPress={handlePlayPause}
-                                    >
-                                        {isPlaying ? (
-                                            <Pause size={40} color="#18181b" fill="#18181b" />
-                                        ) : (
-                                            <Play size={40} color="#18181b" fill="#18181b" className="ml-1.5" />
-                                        )}
-                                    </TouchableOpacity>
+                                        <TouchableOpacity
+                                            className="w-[80px] h-[80px] rounded-full bg-amber-500 items-center justify-center shadow-[0_10px_40px_rgba(245,158,11,0.4)]"
+                                            activeOpacity={0.8}
+                                            onPress={handlePlayPause}
+                                        >
+                                            {isPlaying ? (
+                                                <Pause size={36} color="#18181b" fill="#18181b" />
+                                            ) : (
+                                                <Play size={36} color="#18181b" fill="#18181b" className="ml-1.5" />
+                                            )}
+                                        </TouchableOpacity>
 
-                                    <TouchableOpacity onPress={handleSeekForward} className="items-center justify-center relative w-16 h-16 rounded-full bg-zinc-800/40 active:bg-zinc-800/80 transition-colors">
-                                        <RotateCw size={32} color="#e4e4e7" strokeWidth={1.5} />
-                                        <Text className="absolute text-zinc-300 font-inter-bold text-[10px] mt-1">15</Text>
-                                    </TouchableOpacity>
-                                </Animated.View>
+                                        <TouchableOpacity onPress={handleSeekForward} className="items-center justify-center relative w-[60px] h-[60px] rounded-full bg-zinc-800/40 active:bg-zinc-800/80 transition-colors">
+                                            <RotateCw size={28} color="#e4e4e7" strokeWidth={1.5} />
+                                            <Text className="absolute text-zinc-300 font-inter-bold text-[9px] mt-1">15</Text>
+                                        </TouchableOpacity>
+                                    </Animated.View>
+                                </View>
 
                                 {/* Secondary Controls - Bottom Navigation Style */}
                                 <Animated.View entering={FadeInDown.delay(400).duration(800)} exiting={FadeOutDown.duration(300)} className="flex-row items-center border-t border-zinc-800/80 bg-zinc-900/50 absolute bottom-0 left-0 right-0 h-20 px-8 pb-0 justify-between rounded-t-3xl">
