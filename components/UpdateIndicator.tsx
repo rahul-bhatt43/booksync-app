@@ -5,7 +5,7 @@ import { Linking, Modal, Platform, Text, TouchableOpacity, View } from 'react-na
 import Animated, { SlideInDown } from 'react-native-reanimated';
 
 // Current static build links for each platform
-const CURRENT_ANDROID_LINK = 'https://expo.dev/accounts/rahulbhatt3578/projects/BookSync/builds/afa250f4-1fa3-4318-9e04-ff5ff0ccda23';
+const CURRENT_ANDROID_LINK = 'https://expo.dev/accounts/rahulbhatt3578/projects/BookSync/builds/57288cec-bf14-4aa5-b290-def87188010c';
 const CURRENT_IOS_LINK = ''; // Update when iOS link is available
 
 export default function UpdateIndicator() {
