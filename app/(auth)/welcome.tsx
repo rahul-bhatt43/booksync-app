@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import { Headphones, Sparkles } from 'lucide-react-native';
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { Sparkles } from 'lucide-react-native';
+import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -22,7 +22,11 @@ export default function WelcomeScreen() {
                     entering={FadeInDown.duration(800).springify()}
                     className="bg-amber-500/10 p-6 rounded-full border border-amber-500/20 mb-8"
                 >
-                    <Headphones size={72} color="#f59e0b" strokeWidth={1.5} />
+                    <Image
+                        source={require('../../assets/images/splash-icon.png')}
+                        style={{ width: 82, height: 82 }}
+                        resizeMode="contain"
+                    />
                     <View className="absolute top-1 right-1 w-5 h-5 bg-amber-400 rounded-full border-4 border-zinc-950 shadow-[0_0_10px_rgba(245,158,11,0.8)]" />
                 </Animated.View>
 
