@@ -99,7 +99,7 @@ export default function MiniPlayer() {
                 className="absolute bottom-[88px] left-3 right-3 bg-zinc-900 border border-zinc-700/50 rounded-2xl shadow-2xl overflow-hidden z-50"
             >
                 {/* Amber left accent bar */}
-                <View className="absolute left-0 top-0 bottom-0 w-1 bg-amber-500 rounded-l-2xl" />
+                {/* <View className="absolute left-0 top-0 bottom-0 w-1 bg-amber-500 rounded-l-2xl" /> */}
 
                 <View className="flex-row items-center px-3 py-2.5">
                     {/* Play/Pause Button */}
