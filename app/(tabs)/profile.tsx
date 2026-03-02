@@ -1,5 +1,4 @@
 import apiClient from '@/api/client';
-import GlassContainer from '@/components/GlassContainer';
 import Skeleton from '@/components/Skeleton';
 import { useAudio } from '@/contexts/AudioContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -44,10 +43,12 @@ export default function ProfileScreen() {
     };
 
     const menuItems = [
-        { icon: <Settings size={22} color="#a1a1aa" />, label: 'Account Settings' },
-        { icon: <CreditCard size={22} color="#a1a1aa" />, label: 'Subscription' },
-        { icon: <HelpCircle size={22} color="#a1a1aa" />, label: 'Help & Support' },
+        { icon: Settings, label: 'Account Settings', subtitle: 'Edit profile & preferences' },
+        { icon: CreditCard, label: 'Subscription', subtitle: 'Manage your plan' },
+        { icon: HelpCircle, label: 'Help & Support', subtitle: 'FAQs and contact us' },
     ];
+
+    const firstName = user?.name?.split(' ')[0] || 'U';
 
     return (
         <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
@@ -58,13 +59,13 @@ export default function ProfileScreen() {
                         <Skeleton width={160} height={28} className="mb-2" />
                         <Skeleton width={120} height={16} className="mb-6" />
                         <View className="flex-row justify-between w-full px-4">
-                            <Skeleton width="45%" height={80} borderRadius={16} className="mr-3" />
-                            <Skeleton width="45%" height={80} borderRadius={16} className="ml-3" />
+                            <Skeleton width="45%" height={88} borderRadius={20} />
+                            <Skeleton width="45%" height={88} borderRadius={20} />
                         </View>
                     </View>
-                    <View className="pt-8 mb-16">
+                    <View className="pt-8">
                         <Skeleton width={80} height={14} className="mb-4" />
-                        <Skeleton width="100%" height={200} borderRadius={16} className="mb-8" />
+                        <Skeleton width="100%" height={180} borderRadius={20} className="mb-6" />
                         <Skeleton width="100%" height={56} borderRadius={16} />
                     </View>
                 </View>
@@ -72,63 +73,108 @@ export default function ProfileScreen() {
                 <ScrollView
                     className="flex-1"
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 40 }}
+                    contentContainerStyle={{ paddingBottom: 100 }}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
                     }
                 >
                     {/* Header & Avatar */}
-                    <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="px-6 pt-6 pb-8 items-center border-b border-zinc-800/50">
-                        <View className="w-24 h-24 rounded-full bg-zinc-800 mb-4 items-center justify-center border-2 border-amber-500/30">
-                            <Text className="text-amber-500 font-inter-bold text-3xl">
-                                {user?.name?.charAt(0) || 'U'}
-                            </Text>
+                    <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="px-6 pt-6 pb-8 items-center">
+                        {/* Avatar with gradient ring effect */}
+                        <View className="relative mb-4">
+                            {/* Outer glow ring */}
+                            <View
+                                style={{
+                                    width: 100,
+                                    height: 100,
+                                    borderRadius: 50,
+                                    padding: 3,
+                                    backgroundColor: '#f59e0b',
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        borderRadius: 47,
+                                        backgroundColor: '#27272a',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Text style={{ color: '#f59e0b', fontFamily: 'Inter-Bold', fontSize: 32 }}>
+                                        {firstName.charAt(0)}
+                                    </Text>
+                                </View>
+                            </View>
+                            {/* Online dot */}
+                            <View className="absolute bottom-0.5 right-0.5 w-5 h-5 bg-emerald-500 rounded-full border-2 border-zinc-950" />
                         </View>
+
                         <Text className="text-white font-inter-bold text-2xl tracking-tight mb-1">{user?.name || 'User'}</Text>
-                        <Text className="text-zinc-400 font-inter text-sm mb-6">{user?.email || 'user@example.com'}</Text>
+                        <Text className="text-zinc-500 font-inter text-sm mb-6">{user?.email || 'user@example.com'}</Text>
 
                         {/* Quick Stats */}
-                        <View className="flex-row justify-between w-full px-4">
-                            <GlassContainer intensity="light" className="flex-1 items-center py-4 mr-3">
-                                <Clock size={24} color="#f59e0b" className="mb-2" />
-                                <Text className="text-white font-inter-bold text-xl mb-1">{profileData?.user?.createdAt ? new Date(profileData.user.createdAt).getFullYear() : 'New'}</Text>
+                        <View className="flex-row w-full" style={{ gap: 12 }}>
+                            <View className="flex-1 bg-zinc-900/60 border border-zinc-800 rounded-2xl items-center py-4">
+                                <View className="w-10 h-10 bg-amber-500/15 rounded-full items-center justify-center mb-2">
+                                    <Clock size={20} color="#f59e0b" />
+                                </View>
+                                <Text className="text-white font-inter-bold text-xl mb-0.5">
+                                    {profileData?.user?.createdAt ? new Date(profileData.user.createdAt).getFullYear() : 'New'}
+                                </Text>
                                 <Text className="text-zinc-500 font-inter-medium text-xs">Joined</Text>
-                            </GlassContainer>
-                            <GlassContainer intensity="light" className="flex-1 items-center py-4 ml-3">
-                                <Headphones size={24} color="#f59e0b" className="mb-2" />
-                                <Text className="text-white font-inter-bold text-xl mb-1">{profileData?.likes?.length || 0}</Text>
-                                <Text className="text-zinc-500 font-inter-medium text-xs">Likes</Text>
-                            </GlassContainer>
+                            </View>
+                            <View className="flex-1 bg-zinc-900/60 border border-zinc-800 rounded-2xl items-center py-4">
+                                <View className="w-10 h-10 bg-amber-500/15 rounded-full items-center justify-center mb-2">
+                                    <Headphones size={20} color="#f59e0b" />
+                                </View>
+                                <Text className="text-white font-inter-bold text-xl mb-0.5">
+                                    {profileData?.likes?.length || 0}
+                                </Text>
+                                <Text className="text-zinc-500 font-inter-medium text-xs">Liked</Text>
+                            </View>
                         </View>
                     </Animated.View>
 
-                    {/* Menu Items */}
-                    <Animated.View entering={FadeInDown.delay(200).duration(800).springify()} className="px-6 pt-8 mb-16">
-                        <Text className="text-zinc-500 font-inter-semibold text-xs uppercase tracking-wider mb-4 px-2">Settings</Text>
-                        <GlassContainer intensity="light" className="mb-8 p-2">
-                            {menuItems.map((item, index) => (
-                                <TouchableOpacity
-                                    key={index}
-                                    className={`flex-row items-center py-4 px-4 ${index !== menuItems.length - 1 ? 'border-b border-zinc-800/50' : ''}`}
-                                    activeOpacity={0.7}
-                                >
-                                    <View className="w-8">{item.icon}</View>
-                                    <Text className="flex-1 text-white font-inter-medium text-base">{item.label}</Text>
-                                    <ChevronRight size={20} color="#52525b" />
-                                </TouchableOpacity>
-                            ))}
-                        </GlassContainer>
+                    {/* Divider */}
+                    <View className="h-px bg-zinc-800/60 mx-6 mb-8" />
 
+                    {/* Menu Items */}
+                    <Animated.View entering={FadeInDown.delay(200).duration(800).springify()} className="px-6">
+                        <Text className="text-zinc-500 font-inter-semibold text-xs uppercase tracking-wider mb-4">Settings</Text>
+
+                        <View className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden mb-6">
+                            {menuItems.map((item, index) => {
+                                const IconComp = item.icon;
+                                return (
+                                    <TouchableOpacity
+                                        key={index}
+                                        className={`flex-row items-center py-4 px-4 ${index !== menuItems.length - 1 ? 'border-b border-zinc-800/60' : ''}`}
+                                        activeOpacity={0.7}
+                                    >
+                                        <View className="w-9 h-9 bg-zinc-800/80 rounded-xl items-center justify-center mr-3">
+                                            <IconComp size={18} color="#a1a1aa" />
+                                        </View>
+                                        <View className="flex-1">
+                                            <Text className="text-white font-inter-semibold text-base">{item.label}</Text>
+                                            <Text className="text-zinc-500 font-inter text-xs mt-0.5">{item.subtitle}</Text>
+                                        </View>
+                                        <ChevronRight size={19} color="#3f3f46" />
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+
+                        {/* Sign Out */}
                         <TouchableOpacity
-                            className="flex-row items-center justify-center py-4 rounded-2xl bg-zinc-900 border border-zinc-800"
+                            className="flex-row items-center justify-center py-4 rounded-2xl bg-red-500/8 border border-red-500/25"
                             onPress={handleSignOut}
-                            activeOpacity={0.7}
+                            activeOpacity={0.75}
                         >
-                            <LogOut size={20} color="#ef4444" className="mr-2" />
+                            <LogOut size={18} color="#ef4444" style={{ marginRight: 8 }} />
                             <Text className="text-red-500 font-inter-semibold text-base">Sign Out</Text>
                         </TouchableOpacity>
                     </Animated.View>
-
                 </ScrollView>
             )}
         </SafeAreaView>

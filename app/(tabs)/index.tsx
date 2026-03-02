@@ -23,7 +23,6 @@ export default function HomeScreen() {
     popular: any[];
   } | null>(null);
   const [loading, setLoading] = useState(true);
-
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchFeed = async () => {
@@ -65,19 +64,16 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
-        {/* Header Skeleton */}
         <View className="px-6 pt-6 pb-8 flex-row justify-between items-start">
           <View>
-            <Skeleton width={100} height={14} className="mb-2" />
+            <Skeleton width={100} height={12} className="mb-2" />
             <Skeleton width={160} height={32} />
           </View>
-          <View className="flex-row items-center space-x-4">
+          <View className="flex-row items-center">
             <Skeleton width={40} height={40} borderRadius={20} />
             <Skeleton width={40} height={40} borderRadius={20} className="ml-2" />
           </View>
         </View>
-
-        {/* Featured Skeleton */}
         <View className="px-6 mb-8">
           <View className="flex-row p-4 rounded-3xl bg-zinc-900 border border-zinc-800">
             <Skeleton width={96} height={144} borderRadius={12} />
@@ -96,28 +92,18 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
-
-        {/* Recommended Skeleton */}
         <View className="mb-8">
           <View className="px-6 mb-4 flex-row justify-between items-center">
             <Skeleton width={150} height={20} />
           </View>
           <View className="flex-row px-6">
-            <View className="w-[140px] mr-4">
-              <Skeleton width={140} height={210} borderRadius={16} className="mb-3" />
-              <Skeleton width="80%" height={16} className="mb-2" />
-              <Skeleton width="50%" height={14} />
-            </View>
-            <View className="w-[140px] mr-4">
-              <Skeleton width={140} height={210} borderRadius={16} className="mb-3" />
-              <Skeleton width="70%" height={16} className="mb-2" />
-              <Skeleton width="60%" height={14} />
-            </View>
-            <View className="w-[140px] mr-4">
-              <Skeleton width={140} height={210} borderRadius={16} className="mb-3" />
-              <Skeleton width="90%" height={16} className="mb-2" />
-              <Skeleton width="40%" height={14} />
-            </View>
+            {[1, 2, 3].map(i => (
+              <View key={i} className="w-[140px] mr-4">
+                <Skeleton width={140} height={210} borderRadius={16} className="mb-3" />
+                <Skeleton width="80%" height={16} className="mb-2" />
+                <Skeleton width="50%" height={14} />
+              </View>
+            ))}
           </View>
         </View>
       </SafeAreaView>
@@ -138,6 +124,9 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
+      {/* Subtle ambient top gradient */}
+      <View className="absolute top-0 left-0 right-0 h-40 bg-amber-900/10" pointerEvents="none" />
+
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
@@ -147,19 +136,19 @@ export default function HomeScreen() {
         }
       >
         {/* Header */}
-        <Animated.View entering={FadeIn.duration(600)} className="px-6 pt-6 pb-8 flex-row justify-between items-start">
+        <Animated.View entering={FadeIn.duration(600)} className="px-6 pt-6 pb-6 flex-row justify-between items-center">
           <View>
-            <Text className="text-zinc-400 font-inter-medium text-xs tracking-widest mb-1 uppercase">{greeting},</Text>
+            <Text className="text-zinc-500 font-inter-medium text-xs tracking-widest mb-1.5 uppercase">{greeting} 👋</Text>
             <Text className="text-white font-inter-bold text-3xl tracking-tight">{firstName}</Text>
           </View>
-          <View className="flex-row items-center space-x-4">
-            <TouchableOpacity className="relative w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 items-center justify-center shadow-sm">
-              <Bell size={20} color="#a1a1aa" />
-              <View className="absolute top-2.5 right-2.5 w-2 h-2 bg-amber-500 rounded-full border border-zinc-900" />
+          <View className="flex-row items-center" style={{ gap: 10 }}>
+            <TouchableOpacity className="relative w-11 h-11 rounded-full bg-zinc-900 border border-zinc-800 items-center justify-center">
+              <Bell size={19} color="#a1a1aa" />
+              <View className="absolute top-2 right-2 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-zinc-950" />
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="w-10 h-10 rounded-full bg-zinc-800 border-[1.5px] border-amber-500/50 items-center justify-center shadow-sm ml-2"
+              className="w-11 h-11 rounded-full bg-zinc-800 border-2 border-amber-500/40 items-center justify-center"
               onPress={() => router.push('/profile')}
             >
               <Text className="text-amber-500 font-inter-bold text-base leading-none">{firstName.charAt(0)}</Text>
@@ -205,7 +194,6 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
         </Animated.View>
-
       </ScrollView>
     </SafeAreaView>
   );

@@ -29,18 +29,27 @@ export default function AudiobookCard({
 
     if (variant === 'featured') {
         return (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => onPress?.(book)}>
+            <TouchableOpacity activeOpacity={0.82} onPress={() => onPress?.(book)}>
                 <GlassContainer className="flex-row p-4" intensity="light">
-                    <Image
-                        source={{ uri: book.coverUrl }}
-                        className="w-24 h-36 rounded-xl bg-zinc-800"
-                        resizeMode="cover"
-                    />
+                    <View className="relative">
+                        <Image
+                            source={{ uri: book.coverUrl }}
+                            className="w-24 h-36 rounded-xl bg-zinc-800"
+                            resizeMode="cover"
+                        />
+                        {/* Play overlay on cover */}
+                        <View className="absolute bottom-2 right-2 w-8 h-8 bg-amber-500 rounded-full items-center justify-center shadow-[0_4px_12px_rgba(245,158,11,0.5)]">
+                            <Play fill="#18181b" color="#18181b" size={12} style={{ marginLeft: 1 }} />
+                        </View>
+                    </View>
                     <View className="flex-1 ml-4 justify-center">
-                        <Text className="text-amber-500 font-inter-medium text-xs mb-1 tracking-wider uppercase">
-                            Continue Listening
-                        </Text>
-                        <Text className="text-white font-inter-bold text-xl mb-1 numberOfLines={2}">
+                        {/* Continue Listening Badge */}
+                        <View className="flex-row items-center mb-2 self-start bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">
+                            <Text className="text-amber-400 font-inter-bold text-[10px] tracking-wider uppercase">
+                                Continue Listening
+                            </Text>
+                        </View>
+                        <Text className="text-white font-inter-bold text-lg mb-1" numberOfLines={2}>
                             {book.title}
                         </Text>
                         <Text className="text-zinc-400 font-inter-medium text-sm mb-4">
@@ -48,21 +57,16 @@ export default function AudiobookCard({
                         </Text>
 
                         {book.progress !== undefined && (
-                            <View className="flex-row items-center mt-auto">
-                                <TouchableOpacity className="w-10 h-10 bg-amber-500 rounded-full items-center justify-center mr-3 shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-                                    <Play fill="#18181b" color="#18181b" size={18} className="ml-1" />
-                                </TouchableOpacity>
-                                <View className="flex-1">
-                                    <View className="h-1.5 bg-zinc-800 rounded-full w-full overflow-hidden">
-                                        <View
-                                            className="h-full bg-amber-500 rounded-full"
-                                            style={{ width: `${book.progress}%` }}
-                                        />
-                                    </View>
-                                    <Text className="text-zinc-500 text-xs mt-1 font-inter-medium">
-                                        {book.progress}% completed
-                                    </Text>
+                            <View className="mt-auto">
+                                <View className="h-1.5 bg-zinc-800 rounded-full w-full overflow-hidden mb-1.5">
+                                    <View
+                                        className="h-full bg-amber-500 rounded-full"
+                                        style={{ width: `${book.progress}%` }}
+                                    />
                                 </View>
+                                <Text className="text-zinc-500 text-xs font-inter-medium">
+                                    {book.progress}% completed
+                                </Text>
                             </View>
                         )}
                     </View>
@@ -73,30 +77,35 @@ export default function AudiobookCard({
 
     if (variant === 'list') {
         return (
-            <TouchableOpacity activeOpacity={0.7} onPress={() => onPress?.(book)} className="flex-row items-center mb-4">
+            <TouchableOpacity activeOpacity={0.75} onPress={() => onPress?.(book)} className="flex-row items-center py-3 border-b border-zinc-800/60">
                 <Image
                     source={{ uri: book.coverUrl }}
-                    className="w-16 h-24 rounded-lg bg-zinc-800"
+                    className="w-16 h-24 rounded-xl bg-zinc-800"
                     resizeMode="cover"
                 />
                 <View className="flex-1 ml-4">
-                    <Text className="text-white font-inter-bold text-base mb-1" numberOfLines={1}>
+                    <Text className="text-white font-inter-bold text-base mb-0.5" numberOfLines={1}>
                         {book.title}
                     </Text>
-                    <Text className="text-zinc-400 font-inter text-sm mb-2" numberOfLines={1}>
+                    <Text className="text-zinc-400 font-inter text-sm mb-3" numberOfLines={1}>
                         {book.author.name}
                     </Text>
                     {book.progress !== undefined && (
                         <View className="flex-row items-center">
-                            <View className="h-1 bg-zinc-800 rounded-full flex-1 overflow-hidden mr-3">
+                            <View className="h-1.5 bg-zinc-800 rounded-full flex-1 overflow-hidden mr-3">
                                 <View
                                     className="h-full bg-amber-500 rounded-full"
                                     style={{ width: `${book.progress}%` }}
                                 />
                             </View>
-                            <Text className="text-zinc-500 text-xs font-inter-medium">{book.progress}%</Text>
+                            <Text className="text-zinc-500 text-xs font-inter-medium w-9 text-right">{book.progress}%</Text>
                         </View>
                     )}
+                </View>
+
+                {/* Play button */}
+                <View className="ml-3 w-9 h-9 bg-zinc-800 rounded-full items-center justify-center border border-zinc-700/60">
+                    <Play fill="#f59e0b" color="#f59e0b" size={14} style={{ marginLeft: 1 }} />
                 </View>
             </TouchableOpacity>
         );
@@ -104,16 +113,26 @@ export default function AudiobookCard({
 
     // Default: Grid
     return (
-        <TouchableOpacity activeOpacity={0.7} onPress={() => onPress?.(book)} className="w-[140px] mr-4">
-            <Image
-                source={{ uri: book.coverUrl }}
-                className="w-[140px] h-[210px] rounded-2xl bg-zinc-800 mb-3"
-                resizeMode="cover"
-            />
-            <Text className="text-white font-inter-semibold text-sm mb-1" numberOfLines={2}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => onPress?.(book)} className="w-[140px] mr-4">
+            <View className="relative mb-3">
+                <Image
+                    source={{ uri: book.coverUrl }}
+                    className="w-[140px] h-[210px] rounded-2xl bg-zinc-800"
+                    resizeMode="cover"
+                />
+                {/* Gradient overlay at bottom for text readability */}
+                <View
+                    className="absolute bottom-0 left-0 right-0 h-16 rounded-b-2xl"
+                />
+                {/* Small play button on bottom-right of cover */}
+                <View className="absolute bottom-2 right-2 w-8 h-8 bg-zinc-900/80 rounded-full border border-zinc-700/60 items-center justify-center">
+                    <Play fill="#f59e0b" color="#f59e0b" size={12} style={{ marginLeft: 1 }} />
+                </View>
+            </View>
+            <Text className="text-white font-inter-semibold text-sm mb-0.5" numberOfLines={2}>
                 {book.title}
             </Text>
-            <Text className="text-zinc-400 font-inter text-xs" numberOfLines={1}>
+            <Text className="text-zinc-500 font-inter text-xs" numberOfLines={1}>
                 {book.author.name}
             </Text>
         </TouchableOpacity>

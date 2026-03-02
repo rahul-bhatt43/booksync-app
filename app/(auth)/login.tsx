@@ -12,11 +12,14 @@ export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [focusedField, setFocusedField] = useState<'email' | 'password' | null>(null);
 
     const handleLogin = async () => {
         if (!email || !password) return;
         await signIn(email, password);
     };
+
+    const isDisabled = isLoading || !email || !password;
 
     return (
         <SafeAreaView className="flex-1 bg-zinc-950 overflow-hidden">
@@ -27,90 +30,116 @@ export default function LoginScreen() {
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                className="flex-1 px-6 pt-4 pb-12 z-10"
+                className="flex-1 px-6 pt-4 pb-10 z-10"
             >
-                {/* Header */}
+                {/* Back Button */}
                 <Animated.View entering={FadeIn.duration(500)} className="flex-row items-center mb-8">
                     <TouchableOpacity
                         onPress={() => router.back()}
-                        className="w-12 h-12 bg-zinc-900/80 rounded-full items-center justify-center border border-zinc-800"
+                        className="w-11 h-11 bg-zinc-900/80 rounded-full items-center justify-center border border-zinc-800"
+                        activeOpacity={0.7}
                     >
-                        <ArrowLeft size={22} color="#d4d4d8" />
+                        <ArrowLeft size={20} color="#d4d4d8" />
                     </TouchableOpacity>
+                </Animated.View>
+
+                {/* Brand Mark */}
+                <Animated.View entering={FadeInDown.delay(50).duration(500)} className="mb-6">
+                    <Text className="text-amber-500 font-inter-bold text-sm tracking-widest uppercase">BookSync</Text>
                 </Animated.View>
 
                 {/* Title */}
                 <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="mb-10">
-                    <Text className="text-4xl font-inter-extrabold font-inter font-inter text-white tracking-tight mb-3">Welcome Back</Text>
-                    <Text className="font-inter font-inter text-zinc-400 text-base leading-relaxed">
-                        Sign in to resume listening to your favorite audiobooks perfectly synced across all devices.
+                    <Text className="text-4xl font-inter-extrabold text-white tracking-tight mb-2">Welcome Back</Text>
+                    <Text className="text-zinc-400 text-base leading-relaxed font-inter">
+                        Sign in to resume listening to your favorite audiobooks.
                     </Text>
                 </Animated.View>
 
                 {/* Form */}
-                <View className="space-y-6 flex-1">
-                    <Animated.View entering={FadeInUp.delay(200).duration(600).springify()}>
-                        <Text className="font-inter font-inter text-zinc-400 text-sm mb-2 font-inter-medium ml-1">Email Address</Text>
-                        <View className="flex-row items-center bg-zinc-900/60 rounded-3xl px-5 py-4 border border-zinc-800 focus:border-amber-500 focus:bg-zinc-900/80 transition-colors">
-                            <Mail size={22} color="#a1a1aa" className="mr-3" />
+                <View className="flex-1">
+                    {/* Email Field */}
+                    <Animated.View entering={FadeInUp.delay(200).duration(600).springify()} className="mb-5">
+                        <Text className="text-zinc-400 text-xs mb-2 font-inter-medium ml-1 tracking-wide uppercase">Email</Text>
+                        <View
+                            className={`flex-row items-center rounded-2xl px-4 py-4 border ${focusedField === 'email'
+                                ? 'bg-zinc-900 border-amber-500/60'
+                                : 'bg-zinc-900/60 border-zinc-800'
+                                }`}
+                        >
+                            <Mail size={20} color={focusedField === 'email' ? '#f59e0b' : '#71717a'} style={{ marginRight: 12 }} />
                             <TextInput
-                                className="flex-1 font-inter font-inter text-white text-base font-inter-medium"
+                                className="flex-1 text-white text-base font-inter-medium"
                                 placeholder="name@example.com"
                                 placeholderTextColor="#52525b"
                                 value={email}
                                 onChangeText={setEmail}
                                 keyboardType="email-address"
                                 autoCapitalize="none"
+                                onFocus={() => setFocusedField('email')}
+                                onBlur={() => setFocusedField(null)}
                             />
                         </View>
                     </Animated.View>
 
-                    <Animated.View entering={FadeInUp.delay(300).duration(600).springify()}>
-                        <Text className="mt-4 font-inter font-inter text-zinc-400 text-sm mb-2 font-inter-medium ml-1">Password</Text>
-                        <View className="flex-row items-center bg-zinc-900/60 rounded-3xl px-5 py-4 border border-zinc-800 focus:border-amber-500 focus:bg-zinc-900/80 transition-colors">
-                            <Lock size={22} color="#a1a1aa" className="mr-3" />
+                    {/* Password Field */}
+                    <Animated.View entering={FadeInUp.delay(300).duration(600).springify()} className="mb-2">
+                        <Text className="text-zinc-400 text-xs mb-2 font-inter-medium ml-1 tracking-wide uppercase">Password</Text>
+                        <View
+                            className={`flex-row items-center rounded-2xl px-4 py-4 border ${focusedField === 'password'
+                                ? 'bg-zinc-900 border-amber-500/60'
+                                : 'bg-zinc-900/60 border-zinc-800'
+                                }`}
+                        >
+                            <Lock size={20} color={focusedField === 'password' ? '#f59e0b' : '#71717a'} style={{ marginRight: 12 }} />
                             <TextInput
-                                className="flex-1 font-inter font-inter text-white text-base font-inter-medium"
+                                className="flex-1 text-white text-base font-inter-medium"
                                 placeholder="••••••••"
                                 placeholderTextColor="#52525b"
                                 value={password}
                                 onChangeText={setPassword}
                                 secureTextEntry={!showPassword}
+                                onFocus={() => setFocusedField('password')}
+                                onBlur={() => setFocusedField(null)}
                             />
                             <TouchableOpacity onPress={() => setShowPassword(!showPassword)} className="pl-2">
-                                {showPassword ? <EyeOff size={22} color="#a1a1aa" /> : <Eye size={22} color="#a1a1aa" />}
+                                {showPassword
+                                    ? <EyeOff size={20} color="#71717a" />
+                                    : <Eye size={20} color="#71717a" />
+                                }
                             </TouchableOpacity>
                         </View>
+
                         <TouchableOpacity
-                            className="mt-4 items-end"
+                            className="mt-3 items-end"
                             onPress={() => router.push('/(auth)/forgot-password')}
                         >
-                            <Text className="font-inter text-amber-500 font-inter-semibold text-sm tracking-wide">Forgot Password?</Text>
+                            <Text className="text-amber-500 font-inter-semibold text-sm">Forgot Password?</Text>
                         </TouchableOpacity>
                     </Animated.View>
                 </View>
 
-                {/* Footer Actions */}
+                {/* Footer */}
                 <Animated.View
                     entering={FadeInUp.delay(500).duration(800).springify()}
-                    className="mt-auto pt-6 space-y-8"
+                    className="mt-auto space-y-5"
                 >
                     <TouchableOpacity
-                        className={`w-full bg-amber-500 py-4 rounded-3xl flex-row justify-center items-center shadow-[0_8px_30px_rgba(245,158,11,0.25)] ${(isLoading || !email || !password) ? 'opacity-100' : ''}`}
+                        className={`w-full py-[17px] rounded-2xl flex-row justify-center items-center shadow-[0_8px_30px_rgba(245,158,11,0.25)] ${isDisabled ? 'bg-amber-500/50' : 'bg-amber-500'}`}
                         onPress={handleLogin}
-                        disabled={isLoading || !email || !password}
+                        disabled={isDisabled}
+                        activeOpacity={0.85}
                     >
-                        {isLoading ? (
-                            <ActivityIndicator color="#18181b" />
-                        ) : (
-                            <Text className="font-inter text-zinc-950 text-lg font-inter-bold text-center tracking-wide">Sign In</Text>
-                        )}
+                        {isLoading
+                            ? <ActivityIndicator color="#18181b" />
+                            : <Text className="text-zinc-950 text-base font-inter-bold text-center tracking-wide">Sign In</Text>
+                        }
                     </TouchableOpacity>
 
-                    <View className="mt-4 flex-row justify-center items-center pb-4">
-                        <Text className="font-inter font-inter text-zinc-400 text-base">Don't have an account? </Text>
+                    <View className="flex-row justify-center items-center pt-2">
+                        <Text className="text-zinc-400 text-base font-inter">Don't have an account? </Text>
                         <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
-                            <Text className="font-inter text-amber-500 text-base font-inter-bold tracking-wide">Sign Up</Text>
+                            <Text className="text-amber-500 text-base font-inter-bold">Sign Up</Text>
                         </TouchableOpacity>
                     </View>
                 </Animated.View>

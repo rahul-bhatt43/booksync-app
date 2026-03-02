@@ -17,6 +17,7 @@ export default function ExploreScreen() {
     const [audiobooks, setAudiobooks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [searchFocused, setSearchFocused] = useState(false);
 
     const fetchCategories = async () => {
         try {
@@ -42,7 +43,6 @@ export default function ExploreScreen() {
             }
 
             const response = await apiClient.get(url);
-            // Search API returns { audiobooks: [...] } inside data, list API returns direct array inside data
             const data = response.data.data;
             setAudiobooks(Array.isArray(data) ? data : data.audiobooks || []);
         } catch (error) {
@@ -55,17 +55,13 @@ export default function ExploreScreen() {
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchAudiobooks();
-        }, 500); // debounce search
-
+        }, 500);
         return () => clearTimeout(timer);
     }, [searchQuery, selectedGenre]);
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
-        await Promise.all([
-            fetchCategories(),
-            fetchAudiobooks()
-        ]);
+        await Promise.all([fetchCategories(), fetchAudiobooks()]);
         setRefreshing(false);
     }, [searchQuery, selectedGenre]);
 
@@ -76,27 +72,34 @@ export default function ExploreScreen() {
 
     const handleGenreSelect = (genreId: string) => {
         setSelectedGenre(prev => prev === genreId ? null : genreId);
-        setSearchQuery(''); // clear search when exploring categories
+        setSearchQuery('');
     };
 
     return (
         <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
-            <View className="px-6 pt-4 pb-4">
-                <Text className="text-white font-inter-bold text-3xl tracking-tight mb-6">Explore</Text>
+            <View className="px-6 pt-4 pb-3">
+                <Text className="text-white font-inter-bold text-3xl tracking-tight mb-5">Explore</Text>
 
-                {/* Search Bar */}
-                <View className="flex-row items-center bg-zinc-900/80 rounded-2xl px-4 py-3 border border-zinc-800 focus:border-amber-500 transition-colors">
-                    <SearchIcon size={20} color="#a1a1aa" className="mr-3" />
+                {/* Search Bar with focus glow */}
+                <View
+                    className={`flex-row items-center rounded-2xl px-4 py-3.5 border ${searchFocused
+                        ? 'bg-zinc-900 border-amber-500/50'
+                        : 'bg-zinc-900/70 border-zinc-800'
+                        }`}
+                >
+                    <SearchIcon size={19} color={searchFocused ? '#f59e0b' : '#71717a'} style={{ marginRight: 10 }} />
                     <TextInput
                         className="flex-1 text-white font-inter text-base"
-                        placeholder="Titles, authors, or genres"
-                        placeholderTextColor="#71717a"
+                        placeholder="Titles, authors, or genres..."
+                        placeholderTextColor="#52525b"
                         value={searchQuery}
                         onChangeText={setSearchQuery}
+                        onFocus={() => setSearchFocused(true)}
+                        onBlur={() => setSearchFocused(false)}
                     />
                     {searchQuery.length > 0 && (
                         <TouchableOpacity onPress={() => setSearchQuery('')} className="p-1 ml-2">
-                            <X size={20} color="#a1a1aa" />
+                            <X size={18} color="#71717a" />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -111,7 +114,7 @@ export default function ExploreScreen() {
                 }
             >
                 {/* Categories / Genres */}
-                <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="mb-8 mt-2">
+                <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="mb-6 mt-1">
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -122,14 +125,23 @@ export default function ExploreScreen() {
                             return (
                                 <TouchableOpacity
                                     key={category._id}
-                                    activeOpacity={0.7}
+                                    activeOpacity={0.75}
                                     onPress={() => handleGenreSelect(category._id)}
-                                    className={`px-5 py-2.5 rounded-full mr-3 shadow-sm border ${isSelected
-                                        ? 'bg-amber-500 border-amber-500'
-                                        : 'bg-zinc-900 border-zinc-800'
-                                        }`}
+                                    style={{
+                                        paddingHorizontal: 18,
+                                        paddingVertical: 10,
+                                        borderRadius: 999,
+                                        marginRight: 10,
+                                        borderWidth: 1,
+                                        backgroundColor: isSelected ? '#f59e0b' : '#18181b',
+                                        borderColor: isSelected ? '#f59e0b' : '#3f3f46',
+                                    }}
                                 >
-                                    <Text className={`font-inter-medium ${isSelected ? 'text-zinc-950 font-inter-bold' : 'text-zinc-300'}`}>
+                                    <Text style={{
+                                        fontFamily: isSelected ? 'Inter-Bold' : 'Inter-Medium',
+                                        color: isSelected ? '#0c0a09' : '#d4d4d8',
+                                        fontSize: 13,
+                                    }}>
                                         {category.name}
                                     </Text>
                                 </TouchableOpacity>
@@ -140,10 +152,17 @@ export default function ExploreScreen() {
 
                 {/* Discover Grid */}
                 <Animated.View entering={FadeInDown.delay(200).duration(800).springify()} className="px-6 mb-16">
-                    <SectionHeader title={selectedGenre ? `${categories.find(c => c._id === selectedGenre)?.name || 'Category'} Audiobooks` : searchQuery ? 'Search Results' : "Discover New Audiobooks"} showSeeAll={false} />
+                    <SectionHeader
+                        title={selectedGenre
+                            ? `${categories.find(c => c._id === selectedGenre)?.name || 'Category'} Books`
+                            : searchQuery
+                                ? 'Search Results'
+                                : 'Discover'}
+                        showSeeAll={false}
+                    />
 
                     {loading ? (
-                        <View className="flex-row flex-wrap justify-between mt-6">
+                        <View className="flex-row flex-wrap justify-between mt-4">
                             {[...Array(6)].map((_, i) => (
                                 <View key={i} className="w-[48%] mb-6">
                                     <Skeleton width="100%" height={210} borderRadius={16} className="mb-3" />
@@ -153,9 +172,9 @@ export default function ExploreScreen() {
                             ))}
                         </View>
                     ) : audiobooks.length > 0 ? (
-                        <View className="flex-row flex-wrap justify-between mt-2">
+                        <View className="flex-row flex-wrap mt-2" style={{ gap: 12 }}>
                             {audiobooks.map((book) => (
-                                <View key={book._id} className="w-[48%] mb-6">
+                                <View key={book._id} style={{ width: '47.5%' }}>
                                     <AudiobookCard book={{
                                         id: book._id,
                                         title: book.title,
@@ -167,8 +186,10 @@ export default function ExploreScreen() {
                             ))}
                         </View>
                     ) : (
-                        <View className="mt-10 items-center justify-center">
-                            <Text className="text-zinc-500 font-inter-medium text-lg">No audiobooks found.</Text>
+                        <View className="mt-16 items-center justify-center">
+                            <Text style={{ fontSize: 40, marginBottom: 12 }}>🔍</Text>
+                            <Text className="text-zinc-400 font-inter-semibold text-lg mb-1">No results found</Text>
+                            <Text className="text-zinc-600 font-inter text-sm text-center px-8">Try a different search or browse categories above</Text>
                         </View>
                     )}
                 </Animated.View>

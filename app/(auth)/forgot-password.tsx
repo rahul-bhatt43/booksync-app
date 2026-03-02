@@ -11,12 +11,15 @@ export default function ForgotPasswordScreen() {
     const { resetPassword, isLoading } = useAuth();
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [focusedField, setFocusedField] = useState(false);
 
     const handleReset = async () => {
         if (!email) return;
         await resetPassword(email);
         setIsSubmitted(true);
     };
+
+    const isDisabled = isLoading || !email;
 
     return (
         <SafeAreaView className="flex-1 bg-zinc-950 overflow-hidden">
@@ -27,47 +30,58 @@ export default function ForgotPasswordScreen() {
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                className="flex-1 px-6 pt-4 pb-12 z-10"
+                className="flex-1 px-6 pt-4 pb-10 z-10"
             >
-                {/* Header */}
-                <Animated.View entering={FadeIn.duration(500)} className="flex-row items-center mb-6">
+                {/* Back Button */}
+                <Animated.View entering={FadeIn.duration(500)} className="flex-row items-center mb-8">
                     <TouchableOpacity
                         onPress={() => router.back()}
-                        className="w-12 h-12 bg-zinc-900/80 rounded-full items-center justify-center border border-zinc-800"
+                        className="w-11 h-11 bg-zinc-900/80 rounded-full items-center justify-center border border-zinc-800"
+                        activeOpacity={0.7}
                     >
-                        <ArrowLeft size={22} color="#d4d4d8" />
+                        <ArrowLeft size={20} color="#d4d4d8" />
                     </TouchableOpacity>
+                </Animated.View>
+
+                {/* Brand Mark */}
+                <Animated.View entering={FadeInDown.delay(50).duration(500)} className="mb-6">
+                    <Text className="text-amber-500 font-inter-bold text-sm tracking-widest uppercase">BookSync</Text>
                 </Animated.View>
 
                 {/* Title */}
                 <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="mb-8">
-                    <Text className="text-4xl font-inter-extrabold font-inter font-inter text-white tracking-tight mb-3">Reset Password</Text>
-                    <Text className="font-inter font-inter text-zinc-400 text-base leading-relaxed">
+                    <Text className="text-4xl font-inter-extrabold text-white tracking-tight mb-2">Reset Password</Text>
+                    <Text className="text-zinc-400 text-base leading-relaxed font-inter">
                         {isSubmitted
                             ? "We've sent a secure password reset link to your email."
-                            : "Enter the email associated with your account and we'll send instructions to reset your password."}
+                            : "Enter your email address and we'll send you instructions to reset your password."}
                     </Text>
                 </Animated.View>
 
                 {/* Form Body */}
                 {!isSubmitted ? (
-                    <View className="space-y-6 flex-1">
-                        <Animated.View entering={FadeInUp.delay(200).duration(600).springify()}>
-                            <Text className="font-inter font-inter text-zinc-400 text-sm mb-2 font-inter-medium ml-1">Email Address</Text>
-                            <View className="flex-row items-center bg-zinc-900/60 rounded-3xl px-5 py-4 border border-zinc-800 focus:border-amber-500 focus:bg-zinc-900/80 transition-colors">
-                                <Mail size={22} color="#a1a1aa" className="mr-3" />
-                                <TextInput
-                                    className="flex-1 font-inter font-inter text-white text-base font-inter-medium"
-                                    placeholder="name@example.com"
-                                    placeholderTextColor="#52525b"
-                                    value={email}
-                                    onChangeText={setEmail}
-                                    keyboardType="email-address"
-                                    autoCapitalize="none"
-                                />
-                            </View>
-                        </Animated.View>
-                    </View>
+                    <Animated.View entering={FadeInUp.delay(200).duration(600).springify()} className="flex-1">
+                        <Text className="text-zinc-400 text-xs mb-2 font-inter-medium ml-1 tracking-wide uppercase">Email Address</Text>
+                        <View
+                            className={`flex-row items-center rounded-2xl px-4 py-4 border ${focusedField
+                                ? 'bg-zinc-900 border-amber-500/60'
+                                : 'bg-zinc-900/60 border-zinc-800'
+                                }`}
+                        >
+                            <Mail size={20} color={focusedField ? '#f59e0b' : '#71717a'} style={{ marginRight: 12 }} />
+                            <TextInput
+                                className="flex-1 text-white text-base font-inter-medium"
+                                placeholder="name@example.com"
+                                placeholderTextColor="#52525b"
+                                value={email}
+                                onChangeText={setEmail}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                onFocus={() => setFocusedField(true)}
+                                onBlur={() => setFocusedField(false)}
+                            />
+                        </View>
+                    </Animated.View>
                 ) : (
                     <Animated.View
                         entering={FadeIn.delay(200).duration(600)}
@@ -75,40 +89,43 @@ export default function ForgotPasswordScreen() {
                     >
                         <Animated.View
                             entering={FadeInDown.delay(300).springify()}
-                            className="bg-amber-500/10 p-6 rounded-full border border-amber-500/20 mb-6"
+                            className="bg-amber-500/10 p-7 rounded-full border border-amber-500/20 mb-6"
                         >
                             <CheckCircle size={56} color="#f59e0b" strokeWidth={1.5} />
                         </Animated.View>
-                        <Animated.Text entering={FadeInUp.delay(400).springify()} className="font-inter font-inter text-white text-2xl font-inter-bold mb-3">Check your mail</Animated.Text>
-                        <Animated.Text entering={FadeInUp.delay(500).springify()} className="font-inter font-inter text-zinc-400 text-center px-6 text-base leading-relaxed">
-                            We have sent detailed password recovery instructions to {email}.
+                        <Animated.Text entering={FadeInUp.delay(400).springify()} className="text-white text-2xl font-inter-bold mb-3">
+                            Check your mail
+                        </Animated.Text>
+                        <Animated.Text entering={FadeInUp.delay(500).springify()} className="text-zinc-400 text-center px-6 text-base leading-relaxed font-inter">
+                            We've sent password recovery instructions to {email}.
                         </Animated.Text>
                     </Animated.View>
                 )}
 
-                {/* Footer Actions */}
+                {/* Footer */}
                 <Animated.View
                     entering={FadeInUp.delay(500).duration(800).springify()}
-                    className="mt-auto pt-6 space-y-8"
+                    className="mt-auto space-y-5"
                 >
                     {!isSubmitted ? (
                         <TouchableOpacity
-                            className={`w-full bg-amber-500 py-4 rounded-3xl flex-row justify-center items-center shadow-[0_8px_30px_rgba(245,158,11,0.25)] ${(isLoading || !email) ? 'opacity-100' : ''}`}
+                            className={`w-full py-[17px] rounded-2xl flex-row justify-center items-center shadow-[0_8px_30px_rgba(245,158,11,0.25)] ${isDisabled ? 'bg-amber-500/50' : 'bg-amber-500'}`}
                             onPress={handleReset}
-                            disabled={isLoading || !email}
+                            disabled={isDisabled}
+                            activeOpacity={0.85}
                         >
-                            {isLoading ? (
-                                <ActivityIndicator color="#18181b" />
-                            ) : (
-                                <Text className="font-inter text-zinc-950 text-lg font-inter-bold text-center tracking-wide">Send Instructions</Text>
-                            )}
+                            {isLoading
+                                ? <ActivityIndicator color="#18181b" />
+                                : <Text className="text-zinc-950 text-base font-inter-bold text-center tracking-wide">Send Instructions</Text>
+                            }
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity
-                            className="w-full bg-zinc-900/50 border border-zinc-800 py-4 rounded-3xl flex-row justify-center items-center"
+                            className="w-full bg-zinc-900/50 border border-zinc-800 py-[17px] rounded-2xl flex-row justify-center items-center"
                             onPress={() => router.push('/(auth)/login')}
+                            activeOpacity={0.8}
                         >
-                            <Text className="font-inter text-zinc-300 text-lg font-inter-bold text-center tracking-wide">Back to Sign In</Text>
+                            <Text className="text-zinc-300 text-base font-inter-semibold text-center tracking-wide">Back to Sign In</Text>
                         </TouchableOpacity>
                     )}
                 </Animated.View>
