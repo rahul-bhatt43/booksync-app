@@ -126,7 +126,7 @@ export default function WelcomeScreen() {
             <View className="w-full space-y-3 z-10 mt-auto">
                 <Animated.View entering={FadeInUp.delay(900).duration(800).springify()}>
                     <TouchableOpacity
-                        className="w-full bg-amber-500 py-[17px] rounded-2xl flex-row justify-center items-center shadow-[0_12px_32px_rgba(245,158,11,0.35)]"
+                        className="mb-4 w-full bg-amber-500 py-[17px] rounded-2xl flex-row justify-center items-center shadow-[0_12px_32px_rgba(245,158,11,0.35)]"
                         onPress={() => router.push('/(auth)/signup')}
                         activeOpacity={0.85}
                     >

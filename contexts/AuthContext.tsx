@@ -96,9 +96,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const resetPassword = async (email: string) => {
         setIsLoading(true);
-        // Simulate API call, not provided in endpoints. Keep as stub.
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setIsLoading(false);
+        try {
+            await apiClient.post('/auth/forgot-password', { email });
+        } catch (error) {
+            console.error('Reset password error', error);
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

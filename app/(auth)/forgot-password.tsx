@@ -11,12 +11,19 @@ export default function ForgotPasswordScreen() {
     const { resetPassword, isLoading } = useAuth();
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [focusedField, setFocusedField] = useState(false);
 
     const handleReset = async () => {
         if (!email) return;
-        await resetPassword(email);
-        setIsSubmitted(true);
+        setError(null);
+        try {
+            await resetPassword(email);
+            setIsSubmitted(true);
+        } catch (err: any) {
+            const message = err.response?.data?.message || 'Failed to send reset instructions. Please try again.';
+            setError(message);
+        }
     };
 
     const isDisabled = isLoading || !email;
@@ -65,22 +72,30 @@ export default function ForgotPasswordScreen() {
                         <View
                             className={`flex-row items-center rounded-2xl px-4 py-4 border ${focusedField
                                 ? 'bg-zinc-900 border-amber-500/60'
-                                : 'bg-zinc-900/60 border-zinc-800'
+                                : error ? 'bg-zinc-900 border-red-500/50' : 'bg-zinc-900/60 border-zinc-800'
                                 }`}
                         >
-                            <Mail size={20} color={focusedField ? '#f59e0b' : '#71717a'} style={{ marginRight: 12 }} />
+                            <Mail size={20} color={focusedField ? '#f59e0b' : error ? '#ef4444' : '#71717a'} style={{ marginRight: 12 }} />
                             <TextInput
                                 className="flex-1 text-white text-base font-inter-medium"
                                 placeholder="name@example.com"
                                 placeholderTextColor="#52525b"
                                 value={email}
-                                onChangeText={setEmail}
+                                onChangeText={(text) => {
+                                    setEmail(text);
+                                    if (error) setError(null);
+                                }}
                                 keyboardType="email-address"
                                 autoCapitalize="none"
                                 onFocus={() => setFocusedField(true)}
                                 onBlur={() => setFocusedField(false)}
                             />
                         </View>
+                        {error && (
+                            <Animated.Text entering={FadeIn.duration(300)} className="text-red-400 text-xs mt-2 ml-1 font-inter-medium">
+                                {error}
+                            </Animated.Text>
+                        )}
                     </Animated.View>
                 ) : (
                     <Animated.View
