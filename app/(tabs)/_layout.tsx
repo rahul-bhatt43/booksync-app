@@ -1,8 +1,9 @@
 import MiniPlayer from '@/components/MiniPlayer';
 import { useAudio } from '@/contexts/AudioContext';
-import { Tabs } from 'expo-router';
+import NetInfo from '@react-native-community/netinfo';
+import { Tabs, useRouter, useSegments } from 'expo-router';
 import { Compass, Home, Library, User } from 'lucide-react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
 
 function TabIcon({ Icon, color, focused }: { Icon: any; color: string; focused: boolean }) {
@@ -26,6 +27,36 @@ function TabIcon({ Icon, color, focused }: { Icon: any; color: string; focused: 
 
 export default function TabLayout() {
   const { currentTrack } = useAudio();
+  const router = useRouter();
+  const segments = useSegments();
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+  const [hasRedirectedOffline, setHasRedirectedOffline] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+      if (state.isConnected) {
+        setHasRedirectedOffline(false);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (isConnected === false && !hasRedirectedOffline) {
+      // Only redirect once per offline "session"
+      setHasRedirectedOffline(true);
+
+      // Get the current path to see if we're on a screen that needs redirection
+      const currentTab = segments[segments.length - 1] as string;
+
+      // Redirect to library downloads if we're on Home or Explore 
+      // (Profile is usually fine to look at offline, but user request implied all others)
+      if (currentTab === 'index' || currentTab === 'explore' || currentTab === '(tabs)') {
+        router.replace('/(tabs)/library?tab=Downloads');
+      }
+    }
+  }, [isConnected, hasRedirectedOffline, segments]);
 
   return (
     <View className="flex-1">

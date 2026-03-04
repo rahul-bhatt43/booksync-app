@@ -7,7 +7,7 @@ import Animated, { SlideInDown } from 'react-native-reanimated';
 // Current static build links for each platform
 // const CURRENT_ANDROID_LINK = process.env.EXPO_PUBLIC_CURRENT_ANDROID_LINK || 'https://expo.dev/accounts/rahulbhatt3578/projects/BookSync/builds/262090d1-ba6b-4ec2-9a15-214222e28b73';
 // const CURRENT_IOS_LINK = process.env.EXPO_PUBLIC_CURRENT_IOS_LINK || ''; // Update when iOS link is available
-const CURRENT_ANDROID_LINK = 'https://expo.dev/accounts/rahulbhatt3578/projects/BookSync/builds/9cf058c0-6341-4ccb-ac35-2ad5f260f8a9';
+const CURRENT_ANDROID_LINK = 'https://expo.dev/accounts/rahulbhatt3578/projects/BookSync/builds/b0333a4d-3f6e-434c-a85c-0b76418e2591';
 const CURRENT_IOS_LINK = ''; // Update when iOS link is available
 
 export default function UpdateIndicator() {

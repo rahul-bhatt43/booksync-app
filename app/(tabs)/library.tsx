@@ -1,43 +1,69 @@
 import apiClient from '@/api/client';
+import PlaylistService from '@/api/playlist';
 import AudiobookCard, { Audiobook } from '@/components/AudiobookCard';
+import PlaylistCard from '@/components/PlaylistCard';
+import PlaylistModal from '@/components/PlaylistModal';
 import Skeleton from '@/components/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import DownloadService, { DownloadedBook } from '@/services/DownloadService';
+import { Playlist } from '@/types/playlist';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Plus } from 'lucide-react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const TABS = ['Listening', 'Finished', 'Downloaded'] as const;
+const TABS = ['Listening', 'Finished', 'Downloads', 'Playlists'] as const;
 type Tab = typeof TABS[number];
 
 export default function LibraryScreen() {
     const router = useRouter();
     const { user } = useAuth();
-    const [activeTab, setActiveTab] = useState<Tab>('Listening');
+    const { tab } = useLocalSearchParams();
+    const [activeTab, setActiveTab] = useState<Tab>((tab as Tab) || 'Listening');
     const [history, setHistory] = useState<any[]>([]);
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [downloadedBooks, setDownloadedBooks] = useState<DownloadedBook[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const playlistModalRef = useRef<BottomSheetModal>(null);
 
-    const fetchHistory = async () => {
+    const fetchData = async () => {
         if (!user) return;
+        setLoading(true);
         try {
-            const response = await apiClient.get('/history');
-            setHistory(response.data.data);
+            if (activeTab === 'Playlists') {
+                const data = await PlaylistService.getUserPlaylists();
+                setPlaylists(data);
+            } else if (activeTab === 'Downloads') {
+                const data = await DownloadService.getDownloadedBooks();
+                setDownloadedBooks(data);
+            } else {
+                const response = await apiClient.get('/history');
+                setHistory(response.data.data);
+            }
         } catch (error) {
-            console.error('Error fetching history', error);
+            console.error(`Error fetching ${activeTab.toLowerCase()}`, error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchHistory();
+        if (tab && TABS.includes(tab as Tab)) {
+            setActiveTab(tab as Tab);
+        }
+    }, [tab]);
+
+    useEffect(() => {
+        fetchData();
     }, [user, activeTab]);
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
-        await fetchHistory();
+        await fetchData();
         setRefreshing(false);
     }, [user, activeTab]);
 
@@ -46,10 +72,25 @@ export default function LibraryScreen() {
         router.push({ pathname: `/player/${book.id}`, params: { position: book.position || 0 } });
     };
 
+    const handlePlaylistPress = (playlist: Playlist) => {
+        // @ts-ignore
+        router.push(`/playlist/${playlist._id}`);
+    };
+
+    const handleCreatePlaylist = () => {
+        playlistModalRef.current?.present();
+    };
+
+    const handlePlaylistCreated = (newPlaylist: Playlist) => {
+        setPlaylists(prev => [newPlaylist, ...prev]);
+    };
+
     const getTabContent = () => {
         if (loading) return [];
+        if (activeTab === 'Playlists') return playlists;
         if (activeTab === 'Listening') return history.filter(h => !h.isCompleted);
         if (activeTab === 'Finished') return history.filter(h => h.isCompleted);
+        if (activeTab === 'Downloads') return downloadedBooks;
         return [];
     };
 
@@ -58,10 +99,20 @@ export default function LibraryScreen() {
     return (
         <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
             <View className="px-6 pt-4 pb-2">
-                <Text className="text-white font-inter-bold text-3xl tracking-tight mb-5">Library</Text>
+                <View className="flex-row items-center justify-between mb-5">
+                    <Text className="text-white font-inter-bold text-3xl tracking-tight">Library</Text>
+                    {activeTab === 'Playlists' && (
+                        <TouchableOpacity
+                            onPress={handleCreatePlaylist}
+                            className="bg-zinc-900 w-10 h-10 rounded-full items-center justify-center border border-zinc-800"
+                        >
+                            <Plus color="#f59e0b" size={24} />
+                        </TouchableOpacity>
+                    )}
+                </View>
 
                 {/* Pill Tab Selector */}
-                <View className="flex-row bg-zinc-900/70 border border-zinc-800 rounded-2xl p-1">
+                <View className="flex-row bg-zinc-900/70 border border-zinc-800 rounded-full p-1">
                     {TABS.map((tab) => {
                         const isActive = activeTab === tab;
                         return (
@@ -73,17 +124,19 @@ export default function LibraryScreen() {
                             >
                                 <View
                                     style={{
-                                        paddingVertical: 9,
+                                        paddingVertical: 8,
+                                        paddingHorizontal: 4,
                                         alignItems: 'center',
-                                        borderRadius: 12,
-                                        backgroundColor: isActive ? '#f59e0b' : 'transparent',
+                                        borderRadius: 25,
+                                        backgroundColor: isActive ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
+                                        borderWidth: 1,
+                                        borderColor: isActive ? '#f59e0b' : 'transparent',
                                     }}
                                 >
                                     <Text style={{
                                         fontFamily: isActive ? 'Inter-Bold' : 'Inter-Medium',
-                                        color: isActive ? '#0c0a09' : '#71717a',
+                                        color: isActive ? '#f59e0b' : '#71717a',
                                         fontSize: 13,
-                                        letterSpacing: 0.1,
                                     }}>
                                         {tab}
                                     </Text>
@@ -120,44 +173,80 @@ export default function LibraryScreen() {
                     </View>
                 ) : (
                     <Animated.View entering={FadeInDown.duration(600).springify()}>
-                        {displayItems.length > 0 ? displayItems.map((item) => (
-                            <AudiobookCard
-                                key={item._id}
-                                book={{
-                                    id: item.audiobook._id,
-                                    title: item.audiobook.title,
-                                    author: item.audiobook.authorId,
-                                    coverUrl: item.audiobook.coverImageUrl,
-                                    progress: item.progressInSeconds
-                                        ? Math.floor((item.progressInSeconds / item.audiobook.durationInSeconds) * 100)
-                                        : 0,
-                                    position: item.progressInSeconds || 0
-                                }}
-                                variant="list"
-                                onPress={handleBookPress}
-                            />
-                        )) : (
+                        {displayItems.length > 0 ? (
+                            activeTab === 'Playlists' ? (
+                                (displayItems as Playlist[]).map((playlist) => (
+                                    <PlaylistCard
+                                        key={playlist._id}
+                                        playlist={playlist}
+                                        onPress={handlePlaylistPress}
+                                    />
+                                ))
+                            ) : activeTab === 'Downloads' ? (
+                                (displayItems as DownloadedBook[]).map((book) => (
+                                    <AudiobookCard
+                                        key={book.id}
+                                        book={{
+                                            id: book.id,
+                                            title: book.title,
+                                            author: book.author as any,
+                                            coverUrl: book.localCoverUri,
+                                            progress: 0,
+                                            position: 0
+                                        }}
+                                        variant="list"
+                                        onPress={handleBookPress}
+                                    />
+                                ))
+                            ) : (
+                                (displayItems as any[]).map((item) => (
+                                    <AudiobookCard
+                                        key={item._id}
+                                        book={{
+                                            id: item.audiobook?._id || '',
+                                            title: item.audiobook?.title || '',
+                                            author: item.audiobook?.authorId || { name: 'Unknown', _id: '' },
+                                            coverUrl: item.audiobook?.coverImageUrl || '',
+                                            progress: item.progressInSeconds && item.audiobook?.durationInSeconds
+                                                ? Math.floor((item.progressInSeconds / item.audiobook.durationInSeconds) * 100)
+                                                : 0,
+                                            position: item.progressInSeconds || 0
+                                        }}
+                                        variant="list"
+                                        onPress={handleBookPress}
+                                    />
+                                ))
+                            )
+                        ) : (
                             <View className="mt-20 items-center justify-center">
                                 <Text style={{ fontSize: 44, marginBottom: 14 }}>
-                                    {activeTab === 'Downloaded' ? '📥' : activeTab === 'Finished' ? '✅' : '🎧'}
+                                    {activeTab === 'Downloads' ? '📥' : activeTab === 'Finished' ? '✅' : activeTab === 'Playlists' ? '🎼' : '🎧'}
                                 </Text>
                                 <Text className="text-zinc-400 font-inter-semibold text-lg mb-1">
-                                    {activeTab === 'Downloaded'
+                                    {activeTab === 'Downloads'
                                         ? 'No downloads yet'
-                                        : `No ${activeTab.toLowerCase()} books`}
+                                        : activeTab === 'Playlists'
+                                            ? 'No playlists yet'
+                                            : `No ${activeTab.toLowerCase()} books`}
                                 </Text>
                                 <Text className="text-zinc-600 font-inter text-sm text-center px-8">
-                                    {activeTab === 'Downloaded'
+                                    {activeTab === 'Downloads'
                                         ? 'Download books to listen offline'
                                         : activeTab === 'Finished'
                                             ? 'Books you finish will appear here'
-                                            : 'Start listening to a book to track your progress'}
+                                            : activeTab === 'Playlists'
+                                                ? 'Create your first playlist to organize your books'
+                                                : 'Start listening to a book to track your progress'}
                                 </Text>
                             </View>
                         )}
                     </Animated.View>
                 )}
             </ScrollView>
+            <PlaylistModal
+                ref={playlistModalRef}
+                onSuccess={handlePlaylistCreated}
+            />
         </SafeAreaView>
     );
 }

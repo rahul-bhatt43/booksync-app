@@ -108,6 +108,7 @@ function RootLayoutNav() {
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="player/[id]" options={{ presentation: 'fullScreenModal', headerShown: false, animation: 'ios_from_left' }} />
+            <Stack.Screen name="playlist/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           </Stack>
           <NetworkIndicator />

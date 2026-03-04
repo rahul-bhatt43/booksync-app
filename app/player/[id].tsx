@@ -1,13 +1,16 @@
 import apiClient from '@/api/client';
+import AddToPlaylistModal from '@/components/AddToPlaylistModal';
 import CommentsDrawer from '@/components/CommentsDrawer';
 import DetailsDrawer from '@/components/DetailsDrawer';
 import Skeleton from '@/components/Skeleton';
 import { useAudio } from '@/contexts/AudioContext';
+import DownloadService from '@/services/DownloadService';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import NetInfo from '@react-native-community/netinfo';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ChevronDown, Clock, Heart, Info, MessageCircle, Pause, Play, RotateCcw, RotateCw } from 'lucide-react-native';
+import { CheckCircle, ChevronDown, Clock, Download, Heart, Info, ListPlus, MessageCircle, Pause, Play, RotateCcw, RotateCw } from 'lucide-react-native';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeOut, FadeOutDown, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -50,11 +53,56 @@ export default function PlayerScreen() {
 
     const commentsDrawerRef = useRef<BottomSheetModal>(null);
     const detailsDrawerRef = useRef<BottomSheetModal>(null);
+    const addToPlaylistModalRef = useRef<BottomSheetModal>(null);
+
+    const [isDownloaded, setIsDownloaded] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
+    const [downloadProgress, setDownloadProgress] = useState(0);
 
     const initialPositionSec = Number(initialPositionParam) || 0;
 
     const fetchAudiobook = async () => {
         if (!bookId) return;
+
+        // 1. Check if book is downloaded first
+        const downloadedBook = await DownloadService.getDownloadedBook(bookId);
+        if (downloadedBook) {
+            console.log('Using local metadata for offline-ready book:', bookId);
+            const localData = {
+                _id: downloadedBook.id,
+                title: downloadedBook.title,
+                authorId: downloadedBook.author,
+                coverImageUrl: downloadedBook.localCoverUri,
+                audioUrl: downloadedBook.localAudioUri,
+                description: downloadedBook.description,
+                isOffline: true
+            };
+            setBookData(localData);
+            setIsDownloaded(true);
+            setLoading(false);
+
+            // Load and play from local
+            if (!currentTrack || currentTrack.id !== bookId) {
+                loadAndPlayTrack({
+                    id: downloadedBook.id,
+                    title: downloadedBook.title,
+                    author: downloadedBook.author as any,
+                    coverUrl: downloadedBook.localCoverUri,
+                    audioUrl: downloadedBook.localAudioUri
+                }, initialPositionSec * 1000);
+            }
+            return;
+        }
+
+        // 2. If not downloaded, check connectivity
+        const netInfo = await NetInfo.fetch();
+        if (!netInfo.isConnected) {
+            Alert.alert('Offline', 'This book is not available offline. Please connect to the internet.');
+            setLoading(false);
+            router.back();
+            return;
+        }
+
         try {
             const response = await apiClient.get(`/audiobooks/${bookId}`);
             const data = response.data.data;
@@ -81,8 +129,14 @@ export default function PlayerScreen() {
         }
     };
 
+    const checkDownloadStatus = async () => {
+        const downloaded = await DownloadService.isBookDownloaded(bookId);
+        setIsDownloaded(downloaded);
+    };
+
     useEffect(() => {
         fetchAudiobook();
+        checkDownloadStatus();
     }, [bookId]);
 
     const onRefresh = useCallback(async () => {
@@ -92,6 +146,11 @@ export default function PlayerScreen() {
     }, [bookId]);
 
     const handleToggleLike = async () => {
+        const netInfo = await NetInfo.fetch();
+        if (!netInfo.isConnected) {
+            Alert.alert('Offline', 'You need an internet connection to like audiobooks.');
+            return;
+        }
         try {
             await apiClient.post(`/interactions/audiobooks/${bookId}/like`);
             setIsLiked(!isLiked);
@@ -115,6 +174,10 @@ export default function PlayerScreen() {
         detailsDrawerRef.current?.present();
     };
 
+    const handleOpenAddToPlaylist = () => {
+        addToPlaylistModalRef.current?.present();
+    };
+
     const handleCommentAdded = () => {
         setBookData((prev: any) => {
             if (!prev) return prev;
@@ -133,6 +196,59 @@ export default function PlayerScreen() {
                 commentsCount: Math.max(0, (prev.commentsCount || 0) - 1)
             };
         });
+    };
+
+    const handleDownload = async () => {
+        if (isDownloaded) {
+            Alert.alert(
+                'Remove Download',
+                'Are you sure you want to remove this audiobook from your downloads?',
+                [
+                    { text: 'Cancel', style: 'cancel' },
+                    {
+                        text: 'Remove',
+                        style: 'destructive',
+                        onPress: async () => {
+                            await DownloadService.removeDownloadedBook(bookId);
+                            setIsDownloaded(false);
+                            Alert.alert('Removed', 'Audiobook removed from local storage.');
+                        }
+                    }
+                ]
+            );
+            return;
+        }
+
+        if (!bookData) return;
+
+        setIsDownloading(true);
+        setDownloadProgress(0);
+
+        try {
+            const result = await DownloadService.downloadBook(
+                {
+                    id: bookId,
+                    title: bookData.title,
+                    author: bookData.authorId,
+                    audioUrl: bookData.audioUrl,
+                    coverUrl: bookData.coverImageUrl,
+                    description: bookData.description
+                },
+                (progress) => setDownloadProgress(progress)
+            );
+
+            if (result) {
+                setIsDownloaded(true);
+                Alert.alert('Success', 'Audiobook downloaded for offline listening!');
+            } else {
+                Alert.alert('Download Failed', 'Could not download the audiobook. Please try again.');
+            }
+        } catch (err) {
+            console.error('Download error:', err);
+            Alert.alert('Error', 'An unexpected error occurred during download.');
+        } finally {
+            setIsDownloading(false);
+        }
     };
 
     // The book displaying on screen
@@ -382,7 +498,7 @@ export default function PlayerScreen() {
                                         onPress={handleSpeedChange}
                                     >
                                         <Text className="text-white font-inter-bold text-lg mb-1">{playbackRate}x</Text>
-                                        <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Speed</Text>
+                                        {/* <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Speed</Text> */}
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
@@ -390,7 +506,48 @@ export default function PlayerScreen() {
                                         onPress={handleOpenDetails}
                                     >
                                         <Info size={26} color="#f4f4f5" className="mb-1.5" />
-                                        <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Details</Text>
+                                        {/* <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Details</Text> */}
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100"
+                                        onPress={handleOpenAddToPlaylist}
+                                    >
+                                        <ListPlus size={26} color="#f4f4f5" className="mb-1.5" />
+                                        {/* <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Add To</Text> */}
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100"
+                                        onPress={handleDownload}
+                                        disabled={isDownloading}
+                                    >
+                                        <View className="relative mb-1.5">
+                                            {isDownloading ? (
+                                                <View className="items-center justify-center">
+                                                    <View className="w-7 h-7 rounded-full border-2 border-zinc-700 items-center justify-center">
+                                                        <View
+                                                            className="w-7 h-7 rounded-full border-2 border-amber-500 absolute"
+                                                            style={{
+                                                                borderTopColor: 'transparent',
+                                                                borderRightColor: 'transparent',
+                                                                transform: [{ rotate: `${downloadProgress * 360}deg` }]
+                                                            }}
+                                                        />
+                                                        <Text className="text-[8px] text-amber-500 font-inter-bold">
+                                                            {Math.round(downloadProgress * 100)}%
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            ) : isDownloaded ? (
+                                                <CheckCircle size={26} color="#f59e0b" />
+                                            ) : (
+                                                <Download size={26} color="#f4f4f5" />
+                                            )}
+                                        </View>
+                                        {/* <Text className={`font-inter-medium text-[10px] uppercase tracking-wider ${isDownloaded || isDownloading ? 'text-amber-500' : 'text-zinc-500'}`}>
+                                            {isDownloading ? 'Downloading' : isDownloaded ? 'Downloaded' : 'Download'}
+                                        </Text> */}
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
@@ -417,6 +574,7 @@ export default function PlayerScreen() {
                 onCommentDeleted={handleCommentDeleted}
             />
             <DetailsDrawer ref={detailsDrawerRef} bookData={bookData} />
+            <AddToPlaylistModal ref={addToPlaylistModalRef} bookId={bookId} />
         </SafeAreaView>
     );
 }

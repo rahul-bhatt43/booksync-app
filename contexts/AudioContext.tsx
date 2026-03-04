@@ -1,3 +1,4 @@
+import DownloadService from '@/services/DownloadService';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import apiClient from '../api/client';
@@ -124,14 +125,26 @@ export function AudioProvider({ children }: { children: ReactNode }) {
                 await sound.unloadAsync();
             }
 
-            // Configure audio session to play in background (if needed later)
+            // Configure audio session to play in background
             await Audio.setAudioModeAsync({
                 playsInSilentModeIOS: true,
                 staysActiveInBackground: true,
             });
 
+            // Check if book is downloaded
+            let audioUri = track.audioUrl;
+            try {
+                const downloadedBook = await DownloadService.getDownloadedBook(track.id);
+                if (downloadedBook) {
+                    console.log('Using local audio for track:', track.id);
+                    audioUri = downloadedBook.localAudioUri;
+                }
+            } catch (err) {
+                console.error('Error checking local files:', err);
+            }
+
             const { sound: newSound } = await Audio.Sound.createAsync(
-                { uri: track.audioUrl },
+                { uri: audioUri },
                 {
                     shouldPlay: true,
                     positionMillis: initialPositionMillis || 0,

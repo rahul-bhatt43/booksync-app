@@ -2,11 +2,11 @@ import apiClient from '@/api/client';
 import AudiobookCard from '@/components/AudiobookCard';
 import SectionHeader from '@/components/SectionHeader';
 import Skeleton from '@/components/Skeleton';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Search as SearchIcon, X } from 'lucide-react-native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Image, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ExploreScreen() {
@@ -80,17 +80,17 @@ export default function ExploreScreen() {
             <View className="px-6 pt-4 pb-3">
                 <Text className="text-white font-inter-bold text-3xl tracking-tight mb-5">Explore</Text>
 
-                {/* Search Bar with focus glow */}
+                {/* Search Bar */}
                 <View
                     className={`flex-row items-center rounded-2xl px-4 py-3.5 border ${searchFocused
-                        ? 'bg-zinc-900 border-amber-500/50'
-                        : 'bg-zinc-900/70 border-zinc-800'
+                        ? 'bg-zinc-900 border-amber-500'
+                        : 'bg-zinc-900/40 border-zinc-800/80'
                         }`}
                 >
-                    <SearchIcon size={19} color={searchFocused ? '#f59e0b' : '#71717a'} style={{ marginRight: 10 }} />
+                    <SearchIcon size={19} color={searchFocused ? '#f59e0b' : '#52525b'} style={{ marginRight: 10 }} />
                     <TextInput
                         className="flex-1 text-white font-inter text-base"
-                        placeholder="Titles, authors, or genres..."
+                        placeholder="Search audiobooks..."
                         placeholderTextColor="#52525b"
                         value={searchQuery}
                         onChangeText={setSearchQuery}
@@ -98,8 +98,8 @@ export default function ExploreScreen() {
                         onBlur={() => setSearchFocused(false)}
                     />
                     {searchQuery.length > 0 && (
-                        <TouchableOpacity onPress={() => setSearchQuery('')} className="p-1 ml-2">
-                            <X size={18} color="#71717a" />
+                        <TouchableOpacity onPress={() => setSearchQuery('')} className="bg-zinc-800 rounded-full p-1 ml-2">
+                            <X size={14} color="#a1a1aa" />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -108,39 +108,88 @@ export default function ExploreScreen() {
             <ScrollView
                 className="flex-1"
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 40 }}
+                contentContainerStyle={{ paddingBottom: 60 }}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
                 }
             >
-                {/* Categories / Genres */}
-                <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="mb-6 mt-1">
+                {/* Featured Section */}
+                {!searchQuery && !selectedGenre && audiobooks.length > 0 && (
+                    <View className="mb-8">
+                        <View className="px-6 mb-4">
+                            <SectionHeader title="Featured" showSeeAll={false} />
+                        </View>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{ paddingHorizontal: 24 }}
+                        >
+                            {audiobooks.slice(0, 3).map((book) => (
+                                <TouchableOpacity
+                                    key={`featured-${book._id}`}
+                                    onPress={() => handleBookPress(book)}
+                                    activeOpacity={0.9}
+                                    style={{
+                                        width: 280,
+                                        height: 160,
+                                        marginRight: 16,
+                                        borderRadius: 20,
+                                        overflow: 'hidden',
+                                        backgroundColor: '#18181b',
+                                    }}
+                                >
+                                    <Image
+                                        source={{ uri: book.coverImageUrl }}
+                                        style={{ width: '100%', height: '100%', position: 'absolute' }}
+                                        resizeMode="cover"
+                                    />
+                                    <LinearGradient
+                                        colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.8)']}
+                                        style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, zIndex: 1 }}
+                                    />
+                                    <View style={{ zIndex: 2, position: 'absolute', bottom: 16, left: 16, right: 16 }}>
+                                        <Text className="text-white font-inter-bold text-lg mb-1" numberOfLines={1}>{book.title}</Text>
+                                        <Text className="text-zinc-300 font-inter-medium text-xs" numberOfLines={1}>
+                                            {typeof book.authorId === 'object' ? book.authorId.name : 'Unknown Author'}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    </View>
+                )}
+
+                {/* Categories */}
+                <View className="mb-8 mt-1">
+                    <View className="px-6 mb-3">
+                        <Text className="text-zinc-400 font-inter-semibold text-xs uppercase tracking-widest">Categories</Text>
+                    </View>
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ paddingHorizontal: 24, paddingVertical: 4 }}
+                        contentContainerStyle={{ paddingHorizontal: 24 }}
                     >
                         {categories.map((category) => {
                             const isSelected = selectedGenre === category._id;
                             return (
                                 <TouchableOpacity
                                     key={category._id}
-                                    activeOpacity={0.75}
+                                    activeOpacity={0.7}
                                     onPress={() => handleGenreSelect(category._id)}
                                     style={{
-                                        paddingHorizontal: 18,
-                                        paddingVertical: 10,
-                                        borderRadius: 999,
-                                        marginRight: 10,
-                                        borderWidth: 1,
+                                        paddingHorizontal: 20,
+                                        paddingVertical: 12,
+                                        borderRadius: 20,
+                                        marginRight: 12,
                                         backgroundColor: isSelected ? '#f59e0b' : '#18181b',
-                                        borderColor: isSelected ? '#f59e0b' : '#3f3f46',
+                                        borderWidth: 1,
+                                        borderColor: isSelected ? '#f59e0b' : '#27272a',
                                     }}
                                 >
                                     <Text style={{
-                                        fontFamily: isSelected ? 'Inter-Bold' : 'Inter-Medium',
-                                        color: isSelected ? '#0c0a09' : '#d4d4d8',
-                                        fontSize: 13,
+                                        fontFamily: isSelected ? 'Inter-Bold' : 'Inter-SemiBold',
+                                        color: isSelected ? '#0c0a09' : '#a1a1aa',
+                                        fontSize: 14,
                                     }}>
                                         {category.name}
                                     </Text>
@@ -148,10 +197,10 @@ export default function ExploreScreen() {
                             );
                         })}
                     </ScrollView>
-                </Animated.View>
+                </View>
 
                 {/* Discover Grid */}
-                <Animated.View entering={FadeInDown.delay(200).duration(800).springify()} className="px-6 mb-16">
+                <View className="px-6 mb-16">
                     <SectionHeader
                         title={selectedGenre
                             ? `${categories.find(c => c._id === selectedGenre)?.name || 'Category'} Books`
@@ -172,9 +221,12 @@ export default function ExploreScreen() {
                             ))}
                         </View>
                     ) : audiobooks.length > 0 ? (
-                        <View className="flex-row flex-wrap mt-2" style={{ gap: 12 }}>
+                        <View className="flex-row flex-wrap mt-2" style={{ gap: 15 }}>
                             {audiobooks.map((book) => (
-                                <View key={book._id} style={{ width: '47.5%' }}>
+                                <View
+                                    key={book._id}
+                                    style={{ width: '47.5%' }}
+                                >
                                     <AudiobookCard book={{
                                         id: book._id,
                                         title: book.title,
@@ -186,13 +238,26 @@ export default function ExploreScreen() {
                             ))}
                         </View>
                     ) : (
-                        <View className="mt-16 items-center justify-center">
-                            <Text style={{ fontSize: 40, marginBottom: 12 }}>🔍</Text>
-                            <Text className="text-zinc-400 font-inter-semibold text-lg mb-1">No results found</Text>
-                            <Text className="text-zinc-600 font-inter text-sm text-center px-8">Try a different search or browse categories above</Text>
+                        <View className="mt-24 items-center justify-center px-12">
+                            <View className="w-20 h-20 bg-zinc-900 rounded-full items-center justify-center mb-6 border border-zinc-800/50">
+                                <SearchIcon size={32} color="#52525b" />
+                            </View>
+                            <Text className="text-white font-inter-bold text-xl mb-2 text-center">No results found</Text>
+                            <Text className="text-zinc-500 font-inter text-sm text-center leading-5">
+                                We couldn't find any books matching your search. Try checking the spelling or using different keywords.
+                            </Text>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setSearchQuery('');
+                                    setSelectedGenre(null);
+                                }}
+                                className="mt-8 bg-zinc-800 px-6 py-3 rounded-xl border border-zinc-700/50"
+                            >
+                                <Text className="text-zinc-300 font-inter-semibold text-sm">Clear Search</Text>
+                            </TouchableOpacity>
                         </View>
                     )}
-                </Animated.View>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
