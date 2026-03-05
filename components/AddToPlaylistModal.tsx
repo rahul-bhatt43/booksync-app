@@ -57,8 +57,8 @@ const AddToPlaylistModal = forwardRef<BottomSheetModal, AddToPlaylistModalProps>
             index={0}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
-            backgroundStyle={{ backgroundColor: '#18181b' }}
-            handleIndicatorStyle={{ backgroundColor: '#52525b' }}
+            backgroundStyle={{ backgroundColor: 'hsl(12 6.5% 15.1%)' }}
+            handleIndicatorStyle={{ backgroundColor: 'hsl(24 5.4% 63.9%)' }}
             enablePanDownToClose={true}
             onAnimate={(from, to) => {
                 if (to === 0) fetchPlaylists();
@@ -70,7 +70,7 @@ const AddToPlaylistModal = forwardRef<BottomSheetModal, AddToPlaylistModalProps>
 
             <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
                 {loading ? (
-                    <ActivityIndicator color="#f59e0b" style={{ marginTop: 20 }} />
+                    <ActivityIndicator color="hsl(20.5 90.2% 48.2%)" style={{ marginTop: 20 }} />
                 ) : (
                     <>
                         <TouchableOpacity
@@ -78,7 +78,7 @@ const AddToPlaylistModal = forwardRef<BottomSheetModal, AddToPlaylistModalProps>
                             onPress={() => Alert.alert('Create Playlist', 'This feature is coming soon!')}
                         >
                             <View style={styles.iconContainer}>
-                                <Plus color="#f59e0b" size={20} />
+                                <Plus color="hsl(20.5 90.2% 48.2%)" size={20} />
                             </View>
                             <Text style={styles.createText}>Create New Playlist</Text>
                         </TouchableOpacity>
@@ -91,7 +91,7 @@ const AddToPlaylistModal = forwardRef<BottomSheetModal, AddToPlaylistModalProps>
                                 disabled={adding !== null}
                             >
                                 <View style={styles.playlistIcon}>
-                                    <ListPlus color="#a1a1aa" size={20} />
+                                    <ListPlus color="hsl(24 5.4% 63.9%)" size={20} />
                                 </View>
                                 <View className="flex-1">
                                     <Text style={styles.playlistName}>{playlist.name}</Text>
@@ -99,7 +99,7 @@ const AddToPlaylistModal = forwardRef<BottomSheetModal, AddToPlaylistModalProps>
                                         {playlist.audiobooks.length} {playlist.audiobooks.length === 1 ? 'book' : 'books'}
                                     </Text>
                                 </View>
-                                {adding === playlist._id && <ActivityIndicator size="small" color="#f59e0b" />}
+                                {adding === playlist._id && <ActivityIndicator size="small" color="hsl(20.5 90.2% 48.2%)" />}
                             </TouchableOpacity>
                         ))}
 
@@ -118,9 +118,9 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         paddingHorizontal: 20,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255, 255, 255, 0.05)',
+        borderBottomColor: 'hsla(60, 9.1%, 97.8%, 0.05)',
         alignItems: 'center',
-        backgroundColor: '#18181b',
+        backgroundColor: 'hsl(12 6.5% 15.1%)',
     },
     title: {
         fontSize: 18,
@@ -140,13 +140,13 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 12,
-        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        backgroundColor: 'hsla(20.5, 90.2%, 48.2%, 0.1)',
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 16,
     },
     createText: {
-        color: '#f59e0b',
+        color: 'hsl(20.5 90.2% 48.2%)',
         fontFamily: 'Inter-SemiBold',
         fontSize: 16,
     },
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 12,
-        backgroundColor: '#27272a',
+        backgroundColor: 'hsl(20 14.3% 4.1%)',
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 16,

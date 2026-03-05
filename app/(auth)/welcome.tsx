@@ -43,7 +43,7 @@ function AudioBar({ targetHeight, delay }: { targetHeight: number; delay: number
 
     return (
         <Animated.View
-            style={[style, { width: 6, borderRadius: 4, marginHorizontal: 4, backgroundColor: '#f59e0b', opacity: 0.85 }]}
+            style={[style, { width: 6, borderRadius: 4, marginHorizontal: 4, backgroundColor: 'hsl(20.5 90.2% 48.2%)', opacity: 0.85 }]}
         />
     );
 }
@@ -58,37 +58,37 @@ export default function WelcomeScreen() {
     const router = useRouter();
 
     return (
-        <SafeAreaView className="flex-1 bg-zinc-950 px-6 pb-12 pt-8 overflow-hidden">
+        <SafeAreaView className="flex-1 bg-background px-6 pb-12 pt-8 overflow-hidden">
 
             {/* Decorative Background Elements */}
-            <View className="absolute top-[-120px] left-[-80px] w-96 h-96 bg-amber-500/15 rounded-full blur-[100px]" />
-            <View className="absolute bottom-[-60px] right-[-60px] w-80 h-80 bg-orange-600/15 rounded-full blur-[80px]" />
-            <View className="absolute top-[40%] left-[30%] w-40 h-40 bg-amber-600/8 rounded-full blur-[60px]" />
+            <View className="absolute top-[-120px] left-[-80px] w-96 h-96 bg-primary/15 rounded-full blur-[100px]" />
+            <View className="absolute bottom-[-60px] right-[-60px] w-80 h-80 bg-primary/10 rounded-full blur-[80px]" />
+            <View className="absolute top-[40%] left-[30%] w-40 h-40 bg-primary/8 rounded-full blur-[60px]" />
 
             {/* Top Section */}
             <View className="items-center mt-8 z-10 w-full relative">
                 <Animated.View
                     entering={FadeInDown.duration(800).springify()}
-                    className="bg-amber-500/10 p-5 rounded-full border border-amber-500/25 mb-6"
+                    className="bg-primary/10 p-5 rounded-full border border-primary/25 mb-6"
                 >
                     <Image
                         source={require('../../assets/images/splash-icon.png')}
                         style={{ width: 80, height: 80 }}
                         resizeMode="contain"
                     />
-                    <View className="absolute top-1 right-1 w-5 h-5 bg-amber-400 rounded-full border-4 border-zinc-950" />
+                    <View className="absolute top-1 right-1 w-5 h-5 bg-primary rounded-full border-4 border-background" />
                 </Animated.View>
 
                 <Animated.Text
                     entering={FadeInDown.delay(200).duration(800).springify()}
-                    className="text-5xl font-inter-extrabold text-white tracking-tighter mb-3 text-center"
+                    className="text-5xl font-inter-extrabold text-foreground tracking-tighter mb-3 text-center"
                 >
-                    Book<Text className="text-amber-500">Sync</Text>
+                    Book<Text className="text-primary">Sync</Text>
                 </Animated.Text>
 
                 <Animated.Text
                     entering={FadeInDown.delay(400).duration(800).springify()}
-                    className="text-zinc-400 text-base text-center max-w-[280px] leading-relaxed font-inter"
+                    className="text-muted-foreground text-base text-center max-w-[280px] leading-relaxed font-inter"
                 >
                     Immerse yourself in thousands of audiobooks, perfectly synced across all your devices.
                 </Animated.Text>
@@ -114,10 +114,10 @@ export default function WelcomeScreen() {
                 {FEATURES.map((f, i) => (
                     <View
                         key={i}
-                        className="flex-row items-center bg-zinc-900/70 border border-zinc-700/60 px-4 py-2 rounded-full"
+                        className="flex-row items-center bg-secondary/70 border border-border/60 px-4 py-2 rounded-full"
                     >
                         <Text style={{ fontSize: 13 }}>{f.icon}</Text>
-                        <Text className="text-zinc-300 font-inter-medium text-xs ml-1.5">{f.label}</Text>
+                        <Text className="text-muted-foreground font-inter-medium text-xs ml-1.5">{f.label}</Text>
                     </View>
                 ))}
             </Animated.View>
@@ -126,24 +126,24 @@ export default function WelcomeScreen() {
             <View className="w-full space-y-3 z-10 mt-auto">
                 <Animated.View entering={FadeInUp.delay(900).duration(800).springify()}>
                     <TouchableOpacity
-                        className="mb-4 w-full bg-amber-500 py-[17px] rounded-2xl flex-row justify-center items-center shadow-[0_12px_32px_rgba(245,158,11,0.35)]"
+                        className="mb-4 w-full bg-primary py-[17px] rounded-2xl flex-row justify-center items-center shadow-md"
                         onPress={() => router.push('/(auth)/signup')}
                         activeOpacity={0.85}
                     >
-                        <Sparkles size={19} color="#18181b" />
-                        <Text className="ml-2 text-zinc-950 text-base font-inter-bold text-center tracking-wide">
-                            Start Listening Free
+                        <Sparkles size={19} color="hsl(20 14.3% 4.1%)" />
+                        <Text className="ml-2 text-background text-base font-inter-bold text-center tracking-wide">
+                            Start Listening
                         </Text>
                     </TouchableOpacity>
                 </Animated.View>
 
                 <Animated.View entering={FadeInUp.delay(1050).duration(800).springify()}>
                     <TouchableOpacity
-                        className="w-full bg-zinc-900/50 py-[17px] rounded-2xl border border-zinc-800 flex-row justify-center items-center"
+                        className="w-full bg-secondary/50 py-[17px] rounded-2xl border border-border flex-row justify-center items-center"
                         onPress={() => router.push('/(auth)/login')}
                         activeOpacity={0.8}
                     >
-                        <Text className="text-zinc-300 text-base font-inter-semibold text-center tracking-wide">
+                        <Text className="text-muted-foreground text-base font-inter-semibold text-center tracking-wide">
                             I already have an account
                         </Text>
                     </TouchableOpacity>

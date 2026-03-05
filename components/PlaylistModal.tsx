@@ -70,8 +70,8 @@ const PlaylistModal = forwardRef<BottomSheetModal, PlaylistModalProps>(({ playli
             index={0}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
-            backgroundStyle={{ backgroundColor: '#18181b' }}
-            handleIndicatorStyle={{ backgroundColor: '#52525b' }}
+            backgroundStyle={{ backgroundColor: 'hsl(12 6.5% 15.1%)' }}
+            handleIndicatorStyle={{ backgroundColor: 'hsl(24 5.4% 63.9%)' }}
             enablePanDownToClose={true}
         >
             <BottomSheetView style={styles.header}>
@@ -112,8 +112,8 @@ const PlaylistModal = forwardRef<BottomSheetModal, PlaylistModalProps>(({ playli
                     <Switch
                         value={isPublic}
                         onValueChange={setIsPublic}
-                        trackColor={{ false: '#27272a', true: '#f59e0b33' }}
-                        thumbColor={isPublic ? '#f59e0b' : '#52525b'}
+                        trackColor={{ false: 'hsl(20 14.3% 4.1%)', true: 'hsla(20.5, 90.2%, 48.2%, 0.3)' }}
+                        thumbColor={isPublic ? 'hsl(20.5 90.2% 48.2%)' : 'hsl(24 5.4% 63.9%)'}
                     />
                 </View>
 
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         paddingHorizontal: 20,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255, 255, 255, 0.05)',
+        borderBottomColor: 'hsla(60, 9.1%, 97.8%, 0.05)',
         alignItems: 'center',
     },
     title: {
@@ -154,17 +154,17 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     label: {
-        color: '#e4e4e7',
+        color: 'hsl(60 9.1% 97.8%)',
         fontFamily: 'Inter-SemiBold',
         fontSize: 14,
         marginBottom: 8,
     },
     input: {
-        backgroundColor: '#27272a',
+        backgroundColor: 'hsl(20 14.3% 4.1%)',
         borderRadius: 12,
         paddingHorizontal: 16,
         paddingVertical: 12,
-        color: 'white',
+        color: 'hsl(60 9.1% 97.8%)',
         fontFamily: 'Inter-Regular',
         fontSize: 16,
     },
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 32,
-        backgroundColor: '#27272a',
+        backgroundColor: 'hsl(20 14.3% 4.1%)',
         padding: 16,
         borderRadius: 16,
     },
@@ -188,14 +188,14 @@ const styles = StyleSheet.create({
         marginTop: 2,
     },
     saveButton: {
-        backgroundColor: '#f59e0b',
+        backgroundColor: 'hsl(20.5 90.2% 48.2%)',
         borderRadius: 16,
         paddingVertical: 16,
         alignItems: 'center',
         justifyContent: 'center',
     },
     saveButtonText: {
-        color: '#0c0a09',
+        color: 'hsl(20 14.3% 4.1%)',
         fontFamily: 'Inter-Bold',
         fontSize: 16,
     }

@@ -147,7 +147,7 @@ export default function PlaylistDetailScreen() {
 
     if (loading) {
         return (
-            <SafeAreaView className="flex-1 bg-zinc-950">
+            <SafeAreaView className="flex-1 bg-background">
                 <View className="px-6 pt-4">
                     <Skeleton width={40} height={40} borderRadius={20} className="mb-6" />
                     <Skeleton width="60%" height={32} className="mb-2" />
@@ -168,10 +168,10 @@ export default function PlaylistDetailScreen() {
 
     if (!playlist) {
         return (
-            <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center">
-                <Text className="text-zinc-500 font-inter mb-4">Playlist not found</Text>
-                <TouchableOpacity onPress={() => router.back()} className="bg-amber-500 px-6 py-2 rounded-full">
-                    <Text className="text-zinc-950 font-inter-bold">Go Back</Text>
+            <SafeAreaView className="flex-1 bg-background items-center justify-center">
+                <Text className="text-muted-foreground font-inter mb-4">Playlist not found</Text>
+                <TouchableOpacity onPress={() => router.back()} className="bg-primary px-6 py-2 rounded-full">
+                    <Text className="text-background font-inter-bold">Go Back</Text>
                 </TouchableOpacity>
             </SafeAreaView>
         );
@@ -181,16 +181,16 @@ export default function PlaylistDetailScreen() {
 
     return (
         <BottomSheetModalProvider>
-            <View className="flex-1 bg-zinc-950">
+            <View className="flex-1 bg-background">
                 {/* Custom Sticky Header */}
                 <Animated.View
                     style={[headerStyle, { paddingTop: insets.top }]}
-                    className="absolute top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800 px-6 h-24 flex-row items-center"
+                    className="absolute top-0 left-0 right-0 z-50 bg-secondary border-b border-border px-6 h-24 flex-row items-center"
                 >
                     <TouchableOpacity onPress={() => router.back()} className="mr-4">
-                        <ArrowLeft color="white" size={24} />
+                        <ArrowLeft color="hsl(60 9.1% 97.8%)" size={24} />
                     </TouchableOpacity>
-                    <Text className="text-white font-inter-bold text-lg flex-1" numberOfLines={1}>
+                    <Text className="text-foreground font-inter-bold text-lg flex-1" numberOfLines={1}>
                         {playlist.name}
                     </Text>
                 </Animated.View>
@@ -199,9 +199,9 @@ export default function PlaylistDetailScreen() {
                 <View style={{ top: insets.top + 16 }} className="absolute left-6 z-40">
                     <TouchableOpacity
                         onPress={() => router.back()}
-                        className="w-10 h-10 bg-black/40 rounded-full items-center justify-center border border-white/10"
+                        className="w-10 h-10 bg-secondary/40 rounded-full items-center justify-center border border-border/10"
                     >
-                        <ArrowLeft color="white" size={20} />
+                        <ArrowLeft color="hsl(60 9.1% 97.8%)" size={20} />
                     </TouchableOpacity>
                 </View>
 
@@ -211,7 +211,7 @@ export default function PlaylistDetailScreen() {
                     scrollEventThrottle={16}
                     showsVerticalScrollIndicator={false}
                     refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" />
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="hsl(20.5 90.2% 48.2%)" />
                     }
                 >
                     {/* Header Section */}
@@ -225,48 +225,48 @@ export default function PlaylistDetailScreen() {
                                     blurRadius={20}
                                 />
                             ) : (
-                                <View className="w-full h-full bg-zinc-900" />
+                                <View className="w-full h-full bg-secondary" />
                             )}
-                            <View className="absolute inset-0 bg-zinc-950/40" />
+                            <View className="absolute inset-0 bg-background/40" />
                         </Animated.View>
 
                         <View className="flex-1 justify-end px-6 pb-8">
                             <Animated.View entering={FadeInDown.duration(800).springify()}>
                                 <View className="flex-row items-center mb-4">
-                                    <View className="bg-amber-500 px-2 py-1 rounded-md mr-3">
-                                        <Text className="text-zinc-950 font-inter-bold text-[10px] uppercase">Playlist</Text>
+                                    <View className="bg-primary px-2 py-1 rounded-md mr-3">
+                                        <Text className="text-background font-inter-bold text-[10px] uppercase">Playlist</Text>
                                     </View>
-                                    <Text className="text-zinc-400 font-inter-medium text-xs">
+                                    <Text className="text-muted-foreground font-inter-medium text-xs">
                                         {playlist.isPublic ? 'Public' : 'Private'}
                                     </Text>
                                 </View>
 
-                                <Text className="text-white font-inter-extra-bold text-4xl mb-3 tracking-tighter" style={{ lineHeight: 44 }}>
+                                <Text className="text-foreground font-inter-extra-bold text-4xl mb-3 tracking-tighter" style={{ lineHeight: 44 }}>
                                     {playlist.name}
                                 </Text>
 
                                 {playlist.description ? (
-                                    <Text className="text-zinc-300 font-inter text-base mb-6" numberOfLines={2}>
+                                    <Text className="text-muted-foreground font-inter text-base mb-6" numberOfLines={2}>
                                         {playlist.description}
                                     </Text>
                                 ) : null}
 
                                 <View className="flex-row items-center justify-between">
                                     <View className="flex-row items-center">
-                                        <View className="bg-zinc-800/80 px-3 py-1.5 rounded-full border border-white/5 mr-3">
-                                            <Text className="text-zinc-300 font-inter-semibold text-xs">
+                                        <View className="bg-secondary/80 px-3 py-1.5 rounded-full border border-border/10 mr-3">
+                                            <Text className="text-muted-foreground font-inter-semibold text-xs">
                                                 {playlist.audiobooks.length} {playlist.audiobooks.length === 1 ? 'Book' : 'Books'}
                                             </Text>
                                         </View>
                                         <TouchableOpacity
                                             onPress={handleEditPress}
-                                            className="w-9 h-9 items-center justify-center rounded-full bg-zinc-800/80 border border-white/5"
+                                            className="w-9 h-9 items-center justify-center rounded-full bg-secondary/80 border border-border/10"
                                         >
-                                            <Edit3 color="#d4d4d8" size={16} />
+                                            <Edit3 color="hsl(60 9.1% 97.8%)" size={16} />
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             onPress={handleDelete}
-                                            className="w-9 h-9 items-center justify-center rounded-full bg-zinc-800/80 border border-white/5 ml-3"
+                                            className="w-9 h-9 items-center justify-center rounded-full bg-secondary/80 border border-border/10 ml-3"
                                         >
                                             <Trash2 color="#ef4444" size={16} />
                                         </TouchableOpacity>
@@ -275,9 +275,9 @@ export default function PlaylistDetailScreen() {
                                     <TouchableOpacity
                                         onPress={handlePlayAll}
                                         disabled={playlist.audiobooks.length === 0}
-                                        className={`w-14 h-14 rounded-full bg-amber-500 items-center justify-center shadow-lg shadow-amber-500/30 ${playlist.audiobooks.length === 0 ? 'opacity-50' : ''}`}
+                                        className={`w-14 h-14 rounded-full bg-primary items-center justify-center shadow-lg shadow-primary/30 ${playlist.audiobooks.length === 0 ? 'opacity-50' : ''}`}
                                     >
-                                        <Play fill="#18181b" color="#18181b" size={28} style={{ marginLeft: 3 }} />
+                                        <Play fill="hsl(12 6.5% 15.1%)" color="hsl(12 6.5% 15.1%)" size={28} style={{ marginLeft: 3 }} />
                                     </TouchableOpacity>
                                 </View>
                             </Animated.View>
@@ -285,7 +285,7 @@ export default function PlaylistDetailScreen() {
                     </View>
 
                     {/* Content Section */}
-                    <View className="bg-zinc-950 px-6 pt-4 pb-20">
+                    <View className="bg-background px-6 pt-4 pb-20">
                         {playlist.audiobooks.length > 0 ? (
                             (playlist.audiobooks as Audiobook[]).map((book, index) => (
                                 <Animated.View
@@ -294,7 +294,7 @@ export default function PlaylistDetailScreen() {
                                     className="mb-1"
                                 >
                                     <View className="flex-row items-center">
-                                        <Text className="text-zinc-600 font-inter-bold text-sm mr-4 w-4">
+                                        <Text className="text-muted-foreground/60 font-inter-bold text-sm mr-4 w-4">
                                             {index + 1}
                                         </Text>
                                         <View className="flex-1">
@@ -313,18 +313,18 @@ export default function PlaylistDetailScreen() {
                                             onPress={() => handleRemoveBook(book._id)}
                                             className="ml-2 p-2"
                                         >
-                                            <Trash2 color="#52525b" size={16} />
+                                            <Trash2 color="hsl(24 5.4% 63.9%)" size={16} />
                                         </TouchableOpacity>
                                     </View>
                                 </Animated.View>
                             ))
                         ) : (
                             <View className="mt-20 items-center justify-center h-40">
-                                <View className="w-16 h-16 bg-zinc-900 rounded-full items-center justify-center mb-4 border border-zinc-800">
-                                    <ListPlus color="#3f3f46" size={32} />
+                                <View className="w-16 h-16 bg-secondary rounded-full items-center justify-center mb-4 border border-border">
+                                    <ListPlus color="hsl(24 5.4% 63.9%)" size={32} />
                                 </View>
-                                <Text className="text-zinc-400 font-inter-semibold text-lg mb-1">Your playlist is empty</Text>
-                                <Text className="text-zinc-600 font-inter text-sm text-center">Add audiobooks to start listening</Text>
+                                <Text className="text-muted-foreground font-inter-semibold text-lg mb-1">Your playlist is empty</Text>
+                                <Text className="text-muted-foreground/60 font-inter text-sm text-center">Add audiobooks to start listening</Text>
                             </View>
                         )}
                     </View>

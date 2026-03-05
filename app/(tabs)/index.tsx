@@ -63,7 +63,7 @@ export default function HomeScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
+      <SafeAreaView className="flex-1 bg-background" edges={['top']}>
         <View className="px-6 pt-6 pb-8 flex-row justify-between items-start">
           <View>
             <Skeleton width={100} height={12} className="mb-2" />
@@ -75,7 +75,7 @@ export default function HomeScreen() {
           </View>
         </View>
         <View className="px-6 mb-8">
-          <View className="flex-row p-4 rounded-3xl bg-zinc-900 border border-zinc-800">
+          <View className="flex-row p-4 rounded-3xl bg-secondary border border-border">
             <Skeleton width={96} height={144} borderRadius={12} />
             <View className="flex-1 ml-4 justify-center">
               <Skeleton width={120} height={14} className="mb-2" />
@@ -123,35 +123,35 @@ export default function HomeScreen() {
   const trendingBooks = feedData?.popular?.map(mapToAudiobook) || [];
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       {/* Subtle ambient top gradient */}
-      <View className="absolute top-0 left-0 right-0 h-40 bg-amber-900/10" pointerEvents="none" />
+      {/* <View className="absolute top-0 left-0 right-0 h-40 bg-primary/10" pointerEvents="none" /> */}
 
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="hsl(20.5 90.2% 48.2%)" colors={['hsl(20.5 90.2% 48.2%)']} />
         }
       >
         {/* Header */}
         <Animated.View entering={FadeIn.duration(600)} className="px-6 pt-6 pb-6 flex-row justify-between items-center">
           <View>
-            <Text className="text-zinc-500 font-inter-medium text-xs tracking-widest mb-1.5 uppercase">{greeting} 👋</Text>
-            <Text className="text-white font-inter-bold text-3xl tracking-tight">{firstName}</Text>
+            <Text className="text-muted-foreground font-inter-medium text-xs tracking-widest mb-1.5 uppercase">{greeting} 👋</Text>
+            <Text className="text-foreground font-inter-bold text-3xl tracking-tight">{firstName}</Text>
           </View>
           <View className="flex-row items-center" style={{ gap: 10 }}>
-            <TouchableOpacity className="relative w-11 h-11 rounded-full bg-zinc-900 border border-zinc-800 items-center justify-center">
-              <Bell size={19} color="#a1a1aa" />
-              <View className="absolute top-2 right-2 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-zinc-950" />
+            <TouchableOpacity className="relative w-11 h-11 rounded-full bg-secondary border border-border items-center justify-center">
+              <Bell size={19} color="hsl(60 9.1% 97.8%)" opacity={0.6} />
+              <View className="absolute top-2 right-2 w-2.5 h-2.5 bg-primary rounded-full border-2 border-background" />
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="w-11 h-11 rounded-full bg-zinc-800 border-2 border-amber-500/40 items-center justify-center"
+              className="w-11 h-11 rounded-full bg-secondary border-2 border-primary/40 items-center justify-center"
               onPress={() => router.push('/profile')}
             >
-              <Text className="text-amber-500 font-inter-bold text-base leading-none">{firstName.charAt(0)}</Text>
+              <Text className="text-primary font-inter-bold text-base leading-none">{firstName.charAt(0)}</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>
@@ -166,7 +166,7 @@ export default function HomeScreen() {
         {/* Recommended Section */}
         <Animated.View entering={FadeInDown.delay(200).duration(800).springify()} className="mb-8">
           <View className="px-6">
-            <SectionHeader title="Recommended for You" />
+            <SectionHeader title="Recommended for You" onPressSeeAll={() => router.push('/explore')} />
           </View>
           <ScrollView
             horizontal
@@ -182,7 +182,7 @@ export default function HomeScreen() {
         {/* Trending Section */}
         <Animated.View entering={FadeInDown.delay(300).duration(800).springify()} className="mb-16">
           <View className="px-6">
-            <SectionHeader title="Trending Now" />
+            <SectionHeader title="Trending Now" onPressSeeAll={() => router.push('/explore')} />
           </View>
           <ScrollView
             horizontal

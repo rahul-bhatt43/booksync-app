@@ -76,30 +76,30 @@ export default function ExploreScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
+        <SafeAreaView className="flex-1 bg-background" edges={['top']}>
             <View className="px-6 pt-4 pb-3">
-                <Text className="text-white font-inter-bold text-3xl tracking-tight mb-5">Explore</Text>
+                <Text className="text-foreground font-inter-bold text-3xl tracking-tight mb-5">Explore</Text>
 
                 {/* Search Bar */}
                 <View
                     className={`flex-row items-center rounded-2xl px-4 py-3.5 border ${searchFocused
-                        ? 'bg-zinc-900 border-amber-500'
-                        : 'bg-zinc-900/40 border-zinc-800/80'
+                        ? 'bg-secondary border-primary'
+                        : 'bg-secondary/40 border-border/80'
                         }`}
                 >
-                    <SearchIcon size={19} color={searchFocused ? '#f59e0b' : '#52525b'} style={{ marginRight: 10 }} />
+                    <SearchIcon size={19} color={searchFocused ? 'hsl(20.5 90.2% 48.2%)' : 'hsl(24 5.4% 63.9%)'} style={{ marginRight: 10 }} />
                     <TextInput
-                        className="flex-1 text-white font-inter text-base"
+                        className="flex-1 text-foreground font-inter text-base"
                         placeholder="Search audiobooks..."
-                        placeholderTextColor="#52525b"
+                        placeholderTextColor="hsl(24 5.4% 63.9%)"
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                         onFocus={() => setSearchFocused(true)}
                         onBlur={() => setSearchFocused(false)}
                     />
                     {searchQuery.length > 0 && (
-                        <TouchableOpacity onPress={() => setSearchQuery('')} className="bg-zinc-800 rounded-full p-1 ml-2">
-                            <X size={14} color="#a1a1aa" />
+                        <TouchableOpacity onPress={() => setSearchQuery('')} className="bg-background rounded-full p-1 ml-2">
+                            <X size={14} color="hsl(24 5.4% 63.9%)" />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -110,7 +110,7 @@ export default function ExploreScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 60 }}
                 refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="hsl(20.5 90.2% 48.2%)" colors={['hsl(20.5 90.2% 48.2%)']} />
                 }
             >
                 {/* Featured Section */}
@@ -135,7 +135,7 @@ export default function ExploreScreen() {
                                         marginRight: 16,
                                         borderRadius: 20,
                                         overflow: 'hidden',
-                                        backgroundColor: '#18181b',
+                                        backgroundColor: 'hsl(12 6.5% 15.1%)',
                                     }}
                                 >
                                     <Image
@@ -148,8 +148,8 @@ export default function ExploreScreen() {
                                         style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, zIndex: 1 }}
                                     />
                                     <View style={{ zIndex: 2, position: 'absolute', bottom: 16, left: 16, right: 16 }}>
-                                        <Text className="text-white font-inter-bold text-lg mb-1" numberOfLines={1}>{book.title}</Text>
-                                        <Text className="text-zinc-300 font-inter-medium text-xs" numberOfLines={1}>
+                                        <Text className="text-foreground font-inter-bold text-lg mb-1" numberOfLines={1}>{book.title}</Text>
+                                        <Text className="text-muted-foreground font-inter-medium text-xs" numberOfLines={1}>
                                             {typeof book.authorId === 'object' ? book.authorId.name : 'Unknown Author'}
                                         </Text>
                                     </View>
@@ -162,7 +162,7 @@ export default function ExploreScreen() {
                 {/* Categories */}
                 <View className="mb-8 mt-1">
                     <View className="px-6 mb-3">
-                        <Text className="text-zinc-400 font-inter-semibold text-xs uppercase tracking-widest">Categories</Text>
+                        <Text className="text-muted-foreground/60 font-inter-semibold text-xs uppercase tracking-widest">Categories</Text>
                     </View>
                     <ScrollView
                         horizontal
@@ -181,14 +181,14 @@ export default function ExploreScreen() {
                                         paddingVertical: 12,
                                         borderRadius: 20,
                                         marginRight: 12,
-                                        backgroundColor: isSelected ? '#f59e0b' : '#18181b',
+                                        backgroundColor: isSelected ? 'hsl(20.5 90.2% 48.2%)' : 'hsl(12 6.5% 15.1%)',
                                         borderWidth: 1,
-                                        borderColor: isSelected ? '#f59e0b' : '#27272a',
+                                        borderColor: isSelected ? 'hsl(20.5 90.2% 48.2%)' : 'hsl(12 6.5% 15.1%)',
                                     }}
                                 >
                                     <Text style={{
                                         fontFamily: isSelected ? 'Inter-Bold' : 'Inter-SemiBold',
-                                        color: isSelected ? '#0c0a09' : '#a1a1aa',
+                                        color: isSelected ? 'hsl(20 14.3% 4.1%)' : 'hsl(24 5.4% 63.9%)',
                                         fontSize: 14,
                                     }}>
                                         {category.name}
@@ -239,11 +239,11 @@ export default function ExploreScreen() {
                         </View>
                     ) : (
                         <View className="mt-24 items-center justify-center px-12">
-                            <View className="w-20 h-20 bg-zinc-900 rounded-full items-center justify-center mb-6 border border-zinc-800/50">
-                                <SearchIcon size={32} color="#52525b" />
+                            <View className="w-20 h-20 bg-secondary rounded-full items-center justify-center mb-6 border border-border/50">
+                                <SearchIcon size={32} color="hsl(24 5.4% 63.9%)" />
                             </View>
-                            <Text className="text-white font-inter-bold text-xl mb-2 text-center">No results found</Text>
-                            <Text className="text-zinc-500 font-inter text-sm text-center leading-5">
+                            <Text className="text-foreground font-inter-bold text-xl mb-2 text-center">No results found</Text>
+                            <Text className="text-muted-foreground font-inter text-sm text-center leading-5">
                                 We couldn't find any books matching your search. Try checking the spelling or using different keywords.
                             </Text>
                             <TouchableOpacity
@@ -251,9 +251,9 @@ export default function ExploreScreen() {
                                     setSearchQuery('');
                                     setSelectedGenre(null);
                                 }}
-                                className="mt-8 bg-zinc-800 px-6 py-3 rounded-xl border border-zinc-700/50"
+                                className="mt-8 bg-secondary px-6 py-3 rounded-xl border border-border"
                             >
-                                <Text className="text-zinc-300 font-inter-semibold text-sm">Clear Search</Text>
+                                <Text className="text-foreground font-inter-semibold text-sm">Clear Search</Text>
                             </TouchableOpacity>
                         </View>
                     )}

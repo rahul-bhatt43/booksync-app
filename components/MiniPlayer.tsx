@@ -96,22 +96,22 @@ export default function MiniPlayer() {
                 entering={FadeInUp.duration(400).springify()}
                 exiting={SlideOutDown.duration(300)}
                 style={[panStyle]}
-                className="absolute bottom-[88px] left-3 right-3 bg-zinc-900 border border-zinc-700/50 rounded-2xl shadow-2xl overflow-hidden z-50"
+                className="absolute bottom-[88px] left-3 right-3 bg-secondary border border-border/50 rounded-2xl shadow-2xl overflow-hidden z-50"
             >
-                {/* Amber left accent bar */}
-                {/* <View className="absolute left-0 top-0 bottom-0 w-1 bg-amber-500 rounded-l-2xl" /> */}
+                {/* Primary accent bar (optional) */}
+                {/* <View className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-2xl" /> */}
 
                 <View className="flex-row items-center px-3 py-2.5">
                     {/* Play/Pause Button */}
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={togglePlayPause}
-                        className="w-11 h-11 bg-amber-500 rounded-full items-center justify-center mr-3 shadow-[0_4px_14px_rgba(245,158,11,0.4)]"
+                        className="w-11 h-11 bg-primary rounded-full items-center justify-center mr-3 shadow-[0_4px_14px_rgba(245,158,11,0.4)]"
                     >
                         {isPlaying ? (
-                            <Pause size={18} color="#18181b" fill="#18181b" />
+                            <Pause size={18} color="hsl(20 14.3% 4.1%)" fill="hsl(20 14.3% 4.1%)" />
                         ) : (
-                            <Play size={18} color="#18181b" fill="#18181b" style={{ marginLeft: 2 }} />
+                            <Play size={18} color="hsl(20 14.3% 4.1%)" fill="hsl(20 14.3% 4.1%)" style={{ marginLeft: 2 }} />
                         )}
                     </TouchableOpacity>
 
@@ -123,14 +123,14 @@ export default function MiniPlayer() {
                     >
                         <Image
                             source={{ uri: currentTrack.coverUrl }}
-                            className="w-11 h-11 rounded-xl mr-3 bg-zinc-800"
+                            className="w-11 h-11 rounded-xl mr-3 bg-background"
                             resizeMode="cover"
                         />
                         <View className="flex-1 justify-center">
-                            <Text className="text-white font-inter-bold text-[14px] leading-tight mb-0.5" numberOfLines={1}>
+                            <Text className="text-foreground font-inter-bold text-[14px] leading-tight mb-0.5" numberOfLines={1}>
                                 {currentTrack.title}
                             </Text>
-                            <Text className="text-zinc-400 font-inter-medium text-xs" numberOfLines={1}>
+                            <Text className="text-muted-foreground font-inter-medium text-xs" numberOfLines={1}>
                                 {currentTrack.author.name}
                             </Text>
                         </View>
@@ -139,17 +139,17 @@ export default function MiniPlayer() {
                     {/* Dismiss X button */}
                     <TouchableOpacity
                         onPress={clearAudio}
-                        className="ml-2 w-8 h-8 rounded-full bg-zinc-800/80 items-center justify-center"
+                        className="ml-2 w-8 h-8 rounded-full bg-background/80 items-center justify-center"
                         activeOpacity={0.7}
                     >
-                        <X size={14} color="#71717a" />
+                        <X size={14} color="hsl(24 5.4% 63.9%)" />
                     </TouchableOpacity>
                 </View>
 
                 {/* Progress bar */}
-                <View className="h-[3px] bg-zinc-800 mx-0">
+                <View className="h-[3px] bg-background mx-0">
                     <View
-                        className="h-full bg-amber-500"
+                        className="h-full bg-primary"
                         style={{ width: `${progress}%` }}
                     />
                 </View>

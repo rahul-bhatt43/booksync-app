@@ -15,22 +15,22 @@ export default function PlaylistCard({ playlist, onPress }: PlaylistCardProps) {
         <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => onPress?.(playlist)}
-            className="flex-row items-center py-4 border-b border-zinc-800/60"
+            className="flex-row items-center py-4 border-b border-border/60"
         >
-            <View className="w-14 h-14 bg-zinc-900 rounded-xl items-center justify-center border border-zinc-800">
-                <ListMusic color="#f59e0b" size={24} />
+            <View className="w-14 h-14 bg-secondary rounded-xl items-center justify-center border border-border">
+                <ListMusic color="hsl(20.5 90.2% 48.2%)" size={24} />
             </View>
 
             <View className="flex-1 ml-4">
-                <Text className="text-white font-inter-bold text-base mb-1" numberOfLines={1}>
+                <Text className="text-foreground font-inter-bold text-base mb-1" numberOfLines={1}>
                     {playlist.name}
                 </Text>
-                <Text className="text-zinc-500 font-inter text-sm" numberOfLines={1}>
+                <Text className="text-muted-foreground/60 font-inter text-sm" numberOfLines={1}>
                     {bookCount} {bookCount === 1 ? 'Audiobook' : 'Audiobooks'} • {playlist.isPublic ? 'Public' : 'Private'}
                 </Text>
             </View>
 
-            <ChevronRight color="#3f3f46" size={20} />
+            <ChevronRight color="hsl(24 5.4% 63.9%)" size={20} />
         </TouchableOpacity>
     );
 }

@@ -41,7 +41,7 @@ export default function Skeleton({ width, height, borderRadius = 8, style, class
                     width: width as any,
                     height: height as any,
                     borderRadius,
-                    backgroundColor: '#3f3f46', // zinc-700
+                    backgroundColor: 'hsl(12 6.5% 15.1%)', // secondary
                 },
                 style,
                 animatedStyle,

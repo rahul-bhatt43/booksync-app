@@ -67,18 +67,18 @@ export default function ModalScreen() {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Comments</Text>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[styles.container, { backgroundColor: 'hsl(20 14.3% 4.1%)' }]}>
+      <View style={styles.header} darkColor="hsl(20 14.3% 4.1%)">
+        <Text style={styles.title} darkColor="hsl(60 9.1% 97.8%)">Comments</Text>
       </View>
 
       {loading ? (
         <ScrollView
           contentContainerStyle={styles.listContainer}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="hsl(20.5 90.2% 48.2%)" colors={['hsl(20.5 90.2% 48.2%)']} />}
         >
           {[...Array(5)].map((_, i) => (
-            <View key={i} style={styles.commentCard} className="bg-zinc-100 dark:bg-zinc-900 border border-transparent dark:border-zinc-800">
+            <View key={i} style={styles.commentCard} className="bg-secondary border border-border">
               <View style={styles.commentHeader}>
                 <Skeleton width={28} height={28} borderRadius={14} className="mr-2" />
                 <Skeleton width={100} height={14} />
@@ -92,18 +92,18 @@ export default function ModalScreen() {
       ) : (
         <ScrollView
           contentContainerStyle={styles.listContainer}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="hsl(20.5 90.2% 48.2%)" colors={['hsl(20.5 90.2% 48.2%)']} />}
         >
           {comments.length === 0 ? (
             <Text style={styles.emptyText}>No comments yet. Be the first to share your thoughts!</Text>
           ) : (
             comments.map((comment) => (
-              <View key={comment._id} style={styles.commentCard} lightColor="#f4f4f5" darkColor="#18181b">
+              <View key={comment._id} style={styles.commentCard} lightColor="hsl(60 9.1% 97.8%)" darkColor="hsl(12 6.5% 15.1%)">
                 <View style={styles.commentHeader} lightColor="transparent" darkColor="transparent">
-                  <View style={styles.avatar} lightColor="#e4e4e7" darkColor="#27272a">
+                  <View style={styles.avatar} lightColor="#e4e4e7" darkColor="hsl(20 14.3% 4.1%)">
                     <Text style={styles.avatarText}>{comment.user?.name?.charAt(0) || 'U'}</Text>
                   </View>
-                  <Text style={styles.authorName}>{comment.user?.name || 'User'}</Text>
+                  <Text style={styles.authorName} darkColor="hsl(60 9.1% 97.8%)">{comment.user?.name || 'User'}</Text>
                   {comment.user?._id === user?.id && (
                     <TouchableOpacity onPress={() => handleDeleteComment(comment._id)} style={styles.deleteBtn}>
                       <Trash2 size={16} color="#ef4444" />
@@ -117,7 +117,7 @@ export default function ModalScreen() {
         </ScrollView>
       )}
 
-      <View style={styles.inputContainer} lightColor="#ffffff" darkColor="#09090b">
+      <View style={styles.inputContainer} lightColor="#ffffff" darkColor="hsl(20 14.3% 4.1%)">
         <TextInput
           style={styles.input}
           placeholder="Write a comment..."
@@ -131,7 +131,7 @@ export default function ModalScreen() {
           disabled={submitting || !newComment.trim()}
           style={[styles.sendBtn, (!newComment.trim() || submitting) && { opacity: 0.5 }]}
         >
-          {submitting ? <ActivityIndicator size="small" color="#fff" /> : <Send size={20} color="#fff" />}
+          {submitting ? <ActivityIndicator size="small" color="hsl(20 14.3% 4.1%)" /> : <Send size={20} color="hsl(20 14.3% 4.1%)" />}
         </TouchableOpacity>
       </View>
 
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#f59e0b',
+    color: 'hsl(20.5 90.2% 48.2%)',
   },
   authorName: {
     fontSize: 14,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     fontFamily: 'Inter-Regular',
-    color: '#d4d4d8',
+    color: 'hsl(24 5.4% 63.9%)',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -228,11 +228,11 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     maxHeight: 100,
     minHeight: 44,
-    color: '#fff',
+    color: 'hsl(60 9.1% 97.8%)',
     fontFamily: 'Inter-Regular',
   },
   sendBtn: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: 'hsl(20.5 90.2% 48.2%)',
     width: 44,
     height: 44,
     borderRadius: 22,

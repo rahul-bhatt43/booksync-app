@@ -16,7 +16,7 @@ function TabIcon({ Icon, color, focused }: { Icon: any; color: string; focused: 
             width: 4,
             height: 4,
             borderRadius: 2,
-            backgroundColor: '#f59e0b',
+            backgroundColor: 'hsl(20.5 90.2% 48.2%)',
             marginTop: 4,
           }}
         />
@@ -59,14 +59,14 @@ export default function TabLayout() {
   }, [isConnected, hasRedirectedOffline, segments]);
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-background">
       <Tabs
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: '#09090b',
+            backgroundColor: 'hsl(20 14.3% 4.1%)',
             borderTopWidth: 1,
-            borderTopColor: '#1f1f23',
+            borderTopColor: 'hsl(12 6.5% 15.1%)',
             height: Platform.OS === 'ios' ? 90 : 72,
             paddingBottom: Platform.OS === 'ios' ? 28 : 14,
             paddingTop: 10,
@@ -76,7 +76,7 @@ export default function TabLayout() {
             shadowOpacity: 0.3,
             shadowRadius: 12,
           },
-          tabBarActiveTintColor: '#f59e0b',
+          tabBarActiveTintColor: 'hsl(20.5 90.2% 48.2%)',
           tabBarInactiveTintColor: '#52525b',
           tabBarLabelStyle: {
             fontFamily: 'Inter-Medium',

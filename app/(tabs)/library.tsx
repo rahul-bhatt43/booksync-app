@@ -97,22 +97,22 @@ export default function LibraryScreen() {
     const displayItems = getTabContent();
 
     return (
-        <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
+        <SafeAreaView className="flex-1 bg-background" edges={['top']}>
             <View className="px-6 pt-4 pb-2">
                 <View className="flex-row items-center justify-between mb-5">
-                    <Text className="text-white font-inter-bold text-3xl tracking-tight">Library</Text>
+                    <Text className="text-foreground font-inter-bold text-3xl tracking-tight">Library</Text>
                     {activeTab === 'Playlists' && (
                         <TouchableOpacity
                             onPress={handleCreatePlaylist}
-                            className="bg-zinc-900 w-10 h-10 rounded-full items-center justify-center border border-zinc-800"
+                            className="bg-secondary w-10 h-10 rounded-full items-center justify-center border border-border"
                         >
-                            <Plus color="#f59e0b" size={24} />
+                            <Plus color="hsl(20.5 90.2% 48.2%)" size={24} />
                         </TouchableOpacity>
                     )}
                 </View>
 
                 {/* Pill Tab Selector */}
-                <View className="flex-row bg-zinc-900/70 border border-zinc-800 rounded-full p-1">
+                <View className="flex-row bg-secondary/70 border border-border rounded-full p-1">
                     {TABS.map((tab) => {
                         const isActive = activeTab === tab;
                         return (
@@ -128,14 +128,14 @@ export default function LibraryScreen() {
                                         paddingHorizontal: 4,
                                         alignItems: 'center',
                                         borderRadius: 25,
-                                        backgroundColor: isActive ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
+                                        backgroundColor: isActive ? 'hsla(20.5, 90.2%, 48.2%, 0.1)' : 'transparent',
                                         borderWidth: 1,
-                                        borderColor: isActive ? '#f59e0b' : 'transparent',
+                                        borderColor: isActive ? 'hsl(20.5 90.2% 48.2%)' : 'transparent',
                                     }}
                                 >
                                     <Text style={{
                                         fontFamily: isActive ? 'Inter-Bold' : 'Inter-Medium',
-                                        color: isActive ? '#f59e0b' : '#71717a',
+                                        color: isActive ? 'hsl(20.5 90.2% 48.2%)' : 'hsl(24 5.4% 63.9%)',
                                         fontSize: 13,
                                     }}>
                                         {tab}
@@ -152,13 +152,13 @@ export default function LibraryScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 80 }}
                 refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="hsl(20.5 90.2% 48.2%)" colors={['hsl(20.5 90.2% 48.2%)']} />
                 }
             >
                 {loading ? (
                     <View className="mt-2">
                         {[...Array(4)].map((_, i) => (
-                            <View key={i} className="flex-row items-center py-3 border-b border-zinc-800/60">
+                            <View key={i} className="flex-row items-center py-3 border-b border-border/60">
                                 <Skeleton width={64} height={96} borderRadius={12} />
                                 <View className="flex-1 ml-4 justify-center">
                                     <Skeleton width="70%" height={18} className="mb-2" />
@@ -222,14 +222,14 @@ export default function LibraryScreen() {
                                 <Text style={{ fontSize: 44, marginBottom: 14 }}>
                                     {activeTab === 'Downloads' ? '📥' : activeTab === 'Finished' ? '✅' : activeTab === 'Playlists' ? '🎼' : '🎧'}
                                 </Text>
-                                <Text className="text-zinc-400 font-inter-semibold text-lg mb-1">
+                                <Text className="text-muted-foreground font-inter-semibold text-lg mb-1">
                                     {activeTab === 'Downloads'
                                         ? 'No downloads yet'
                                         : activeTab === 'Playlists'
                                             ? 'No playlists yet'
                                             : `No ${activeTab.toLowerCase()} books`}
                                 </Text>
-                                <Text className="text-zinc-600 font-inter text-sm text-center px-8">
+                                <Text className="text-muted-foreground/60 font-inter text-sm text-center px-8">
                                     {activeTab === 'Downloads'
                                         ? 'Download books to listen offline'
                                         : activeTab === 'Finished'

@@ -322,30 +322,30 @@ export default function PlayerScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-zinc-950">
+        <SafeAreaView className="flex-1 bg-background">
             <View className="flex-1 pb-20 justify-between">
                 {isVisible && (
                     <>
                         {/* Dynamic Ambient Background Blur */}
-                        <Animated.View entering={FadeIn.duration(100)} exiting={FadeOut.duration(100)} className="absolute top-0 left-0 right-0 h-96 bg-amber-900/20" />
+                        {/* <Animated.View entering={FadeIn.duration(100)} exiting={FadeOut.duration(100)} className="absolute top-0 left-0 right-0 h-96 bg-primary/20" /> */}
 
                         {/* Darker overlay to ensure text contrast */}
-                        <Animated.View entering={FadeIn.duration(100)} exiting={FadeOut.duration(100)} className="absolute top-0 left-0 right-0 bottom-0 bg-zinc-950/60" pointerEvents="none" />
+                        <Animated.View entering={FadeIn.duration(100)} exiting={FadeOut.duration(100)} className="absolute top-0 left-0 right-0 bottom-0 bg-background/60" pointerEvents="none" />
 
                         {/* Header */}
                         <Animated.View entering={FadeInDown.duration(400)} exiting={FadeOutDown.duration(300)} className="px-6 pt-2 pb-6 flex-row justify-between items-center z-10">
                             <TouchableOpacity onPress={handleClose} className="p-3 -ml-3" activeOpacity={0.7}>
-                                <ChevronDown size={32} color="#f4f4f5" />
+                                <ChevronDown size={32} color="hsl(60 9.1% 97.8%)" />
                             </TouchableOpacity>
-                            <Text className="text-zinc-400 font-inter-semibold text-xs tracking-widest uppercase">Now Playing</Text>
+                            <Text className="text-muted-foreground font-inter-semibold text-xs tracking-widest uppercase">Now Playing</Text>
                             <View className="flex-row">
                                 <TouchableOpacity className="p-3 flex-row items-center" activeOpacity={0.7} onPress={handleToggleLike}>
-                                    <Heart size={24} color={isLiked ? "#ef4444" : "#f4f4f5"} fill={isLiked ? "#ef4444" : "transparent"} />
-                                    <Text className="text-zinc-400 font-inter-medium text-xs ml-1.5">{bookData?.likesCount || 0}</Text>
+                                    <Heart size={24} color={isLiked ? "#ef4444" : "hsl(60 9.1% 97.8%)"} fill={isLiked ? "#ef4444" : "transparent"} />
+                                    <Text className="text-muted-foreground font-inter-medium text-xs ml-1.5">{bookData?.likesCount || 0}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity className="p-3 -mr-3 flex-row items-center" activeOpacity={0.7} onPress={handleOpenComments}>
-                                    <MessageCircle size={24} color="#f4f4f5" />
-                                    <Text className="text-zinc-400 font-inter-medium text-xs ml-1.5">{bookData?.commentsCount || 0}</Text>
+                                    <MessageCircle size={24} color="hsl(60 9.1% 97.8%)" />
+                                    <Text className="text-muted-foreground font-inter-medium text-xs ml-1.5">{bookData?.commentsCount || 0}</Text>
                                 </TouchableOpacity>
                             </View>
                         </Animated.View>
@@ -381,10 +381,10 @@ export default function PlayerScreen() {
                                 {/* Content Wrapper (Flex to fill remaining space minus absolute bottom bar) */}
                                 <View className="flex-1 justify-center pb-2">
                                     {/* Cover Art */}
-                                    <Animated.View entering={SlideInDown.duration(600).springify()} exiting={SlideOutDown.duration(300)} className="flex-1 items-center justify-center px-10 mb-4 shadow-[0_30px_60px_rgba(245,158,11,0.2)]">
+                                    <Animated.View entering={SlideInDown.duration(600).springify()} exiting={SlideOutDown.duration(300)} className="flex-1 items-center justify-center px-10 mb-4 shadow-xl">
                                         <Image
                                             source={{ uri: displayBook.coverUrl }}
-                                            className="w-full h-full max-w-[280px] rounded-3xl bg-zinc-800 border border-zinc-800/50"
+                                            className="w-full h-full max-w-[280px] rounded-3xl bg-secondary border border-border/50"
                                             resizeMode="contain"
                                             style={{ aspectRatio: 3 / 4 }}
                                         />
@@ -392,7 +392,7 @@ export default function PlayerScreen() {
 
                                     {/* Book Info */}
                                     <Animated.View entering={FadeInDown.delay(100).duration(600)} exiting={FadeOutDown.duration(300)} className="px-8 items-center mb-4 mt-auto">
-                                        <Text className="text-white font-inter-bold text-2xl mb-1 text-center" numberOfLines={2}>
+                                        <Text className="text-foreground font-inter-bold text-2xl mb-1 text-center" numberOfLines={2}>
                                             {displayBook.title}
                                         </Text>
 
@@ -407,7 +407,7 @@ export default function PlayerScreen() {
                                                 }
                                             }}
                                         >
-                                            <Text className="text-amber-500 font-inter-medium text-base mb-1">
+                                            <Text className="text-primary font-inter-medium text-base mb-1">
                                                 {bookData?.authorId?.name || displayBook.author.name}
                                             </Text>
                                         </TouchableOpacity>
@@ -420,8 +420,8 @@ export default function PlayerScreen() {
                                                     setTimeout(() => router.push(`/collection?type=narrator&id=${bookData.narratorId._id}&name=${encodeURIComponent(bookData.narratorId.name)}`), 300);
                                                 }}
                                             >
-                                                <Text className="text-zinc-400 font-inter-medium text-xs mb-2">
-                                                    Narrated by <Text className="text-zinc-300 font-inter-semibold">{bookData.narratorId.name}</Text>
+                                                <Text className="text-muted-foreground font-inter-medium text-xs mb-2">
+                                                    Narrated by <Text className="text-foreground font-inter-semibold">{bookData.narratorId.name}</Text>
                                                 </Text>
                                             </TouchableOpacity>
                                         )}
@@ -429,13 +429,13 @@ export default function PlayerScreen() {
                                         {bookData?.categoryId?.name && (
                                             <TouchableOpacity
                                                 activeOpacity={0.7}
-                                                className="bg-zinc-800/60 px-3 py-1 rounded-full border border-zinc-700/50 mt-1"
+                                                className="bg-secondary/60 px-3 py-1 rounded-full border border-border mt-1"
                                                 onPress={() => {
                                                     handleClose();
                                                     setTimeout(() => router.push(`/collection?type=category&id=${bookData.categoryId._id}&name=${encodeURIComponent(bookData.categoryId.name)}`), 300);
                                                 }}
                                             >
-                                                <Text className="text-zinc-300 font-inter-medium text-[10px] tracking-wide">
+                                                <Text className="text-muted-foreground font-inter-medium text-[10px] tracking-wide">
                                                     {bookData.categoryId.name}
                                                 </Text>
                                             </TouchableOpacity>
@@ -446,11 +446,11 @@ export default function PlayerScreen() {
                                     <Animated.View entering={FadeInDown.delay(200).duration(600)} exiting={FadeOutDown.duration(300)} className="px-8 mb-3 w-full">
                                         {/* Scrubber Line container with larger touch area */}
                                         <View className="py-2 justify-center mb-1">
-                                            <View className="h-2 bg-zinc-800 rounded-full w-full">
-                                                <View className="h-full bg-amber-500 rounded-full relative" style={{ width: `${progressPercent}%` }}>
+                                            <View className="h-2 bg-secondary rounded-full w-full">
+                                                <View className="h-full bg-primary rounded-full relative" style={{ width: `${progressPercent}%` }}>
                                                     {/* Larger handle for better touch ergonomics */}
-                                                    <View className="absolute -right-3 top-1/2 -mt-3 w-6 h-6 bg-white rounded-full shadow-md items-center justify-center">
-                                                        <View className="w-2 h-2 rounded-full bg-amber-500" />
+                                                    <View className="absolute -right-3 top-1/2 -mt-3 w-6 h-6 bg-foreground rounded-full shadow-md items-center justify-center">
+                                                        <View className="w-2 h-2 rounded-full bg-primary" />
                                                     </View>
                                                 </View>
                                             </View>
@@ -458,10 +458,10 @@ export default function PlayerScreen() {
 
                                         {/* Timestamps */}
                                         <View className="flex-row justify-between w-full mt-1">
-                                            <Text className="text-zinc-400 font-inter-medium text-xs">
+                                            <Text className="text-muted-foreground font-inter-medium text-xs">
                                                 {formatTime(position)}
                                             </Text>
-                                            <Text className="text-zinc-400 font-inter-medium text-xs">
+                                            <Text className="text-muted-foreground font-inter-medium text-xs">
                                                 -{formatTime(Math.max(0, duration - position))}
                                             </Text>
                                         </View>
@@ -469,45 +469,45 @@ export default function PlayerScreen() {
 
                                     {/* Main Controls */}
                                     <Animated.View entering={FadeInDown.delay(300).duration(600)} exiting={FadeOutDown.duration(300)} className="px-10 flex-row justify-between items-center">
-                                        <TouchableOpacity onPress={handleSeekBack} className="items-center justify-center relative w-[60px] h-[60px] rounded-full bg-zinc-800/40 active:bg-zinc-800/80 transition-colors">
-                                            <RotateCcw size={28} color="#e4e4e7" strokeWidth={1.5} />
-                                            <Text className="absolute text-zinc-300 font-inter-bold text-[9px] mt-1">15</Text>
+                                        <TouchableOpacity onPress={handleSeekBack} className="items-center justify-center relative w-[60px] h-[60px] rounded-full bg-secondary/40 active:bg-secondary/80 transition-colors">
+                                            <RotateCcw size={28} color="hsl(60 9.1% 97.8%)" opacity={0.8} strokeWidth={1.5} />
+                                            <Text className="absolute text-muted-foreground font-inter-bold text-[9px] mt-1">15</Text>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
-                                            className="w-[80px] h-[80px] rounded-full bg-amber-500 items-center justify-center shadow-[0_10px_40px_rgba(245,158,11,0.4)]"
+                                            className="w-[80px] h-[80px] rounded-full bg-primary items-center justify-center shadow-lg"
                                             activeOpacity={0.8}
                                             onPress={handlePlayPause}
                                         >
                                             {isPlaying ? (
-                                                <Pause size={36} color="#18181b" fill="#18181b" />
+                                                <Pause size={36} color="hsl(20 14.3% 4.1%)" fill="hsl(20 14.3% 4.1%)" />
                                             ) : (
-                                                <Play size={36} color="#18181b" fill="#18181b" className="ml-1.5" />
+                                                <Play size={36} color="hsl(20 14.3% 4.1%)" fill="hsl(20 14.3% 4.1%)" className="ml-1.5" />
                                             )}
                                         </TouchableOpacity>
 
-                                        <TouchableOpacity onPress={handleSeekForward} className="items-center justify-center relative w-[60px] h-[60px] rounded-full bg-zinc-800/40 active:bg-zinc-800/80 transition-colors">
-                                            <RotateCw size={28} color="#e4e4e7" strokeWidth={1.5} />
-                                            <Text className="absolute text-zinc-300 font-inter-bold text-[9px] mt-1">15</Text>
+                                        <TouchableOpacity onPress={handleSeekForward} className="items-center justify-center relative w-[60px] h-[60px] rounded-full bg-secondary/40 active:bg-secondary/80 transition-colors">
+                                            <RotateCw size={28} color="hsl(60 9.1% 97.8%)" opacity={0.8} strokeWidth={1.5} />
+                                            <Text className="absolute text-muted-foreground font-inter-bold text-[9px] mt-1">15</Text>
                                         </TouchableOpacity>
                                     </Animated.View>
                                 </View>
 
                                 {/* Secondary Controls - Bottom Navigation Style */}
-                                <Animated.View entering={FadeInDown.delay(400).duration(800)} exiting={FadeOutDown.duration(300)} className="flex-row items-center border-t border-zinc-800/80 bg-zinc-900/50 absolute bottom-0 left-0 right-0 h-20 px-8 pb-0 justify-between rounded-t-3xl">
+                                <Animated.View entering={FadeInDown.delay(400).duration(800)} exiting={FadeOutDown.duration(300)} className="flex-row items-center border-t border-border/80 bg-secondary/50 absolute bottom-0 left-0 right-0 h-20 px-8 pb-0 justify-between rounded-t-3xl">
                                     <TouchableOpacity
                                         className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100"
                                         onPress={handleSpeedChange}
                                     >
-                                        <Text className="text-white font-inter-bold text-lg mb-1">{playbackRate}x</Text>
-                                        {/* <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Speed</Text> */}
+                                        <Text className="text-foreground font-inter-bold text-lg mb-1">{playbackRate}x</Text>
+                                        <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Speed</Text>
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
-                                        className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100 border-x border-zinc-800/50"
+                                        className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100 border-x border-border/50"
                                         onPress={handleOpenDetails}
                                     >
-                                        <Info size={26} color="#f4f4f5" className="mb-1.5" />
+                                        <Info size={26} color="hsl(60 9.1% 97.8%)" className="mb-1.5" />
                                         {/* <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Details</Text> */}
                                     </TouchableOpacity>
 
@@ -515,7 +515,7 @@ export default function PlayerScreen() {
                                         className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100"
                                         onPress={handleOpenAddToPlaylist}
                                     >
-                                        <ListPlus size={26} color="#f4f4f5" className="mb-1.5" />
+                                        <ListPlus size={26} color="hsl(60 9.1% 97.8%)" className="mb-1.5" />
                                         {/* <Text className="text-zinc-500 font-inter-medium text-[10px] uppercase tracking-wider">Add To</Text> */}
                                     </TouchableOpacity>
 
@@ -527,24 +527,24 @@ export default function PlayerScreen() {
                                         <View className="relative mb-1.5">
                                             {isDownloading ? (
                                                 <View className="items-center justify-center">
-                                                    <View className="w-7 h-7 rounded-full border-2 border-zinc-700 items-center justify-center">
+                                                    <View className="w-7 h-7 rounded-full border-2 border-border items-center justify-center">
                                                         <View
-                                                            className="w-7 h-7 rounded-full border-2 border-amber-500 absolute"
+                                                            className="w-7 h-7 rounded-full border-2 border-primary absolute"
                                                             style={{
                                                                 borderTopColor: 'transparent',
                                                                 borderRightColor: 'transparent',
                                                                 transform: [{ rotate: `${downloadProgress * 360}deg` }]
                                                             }}
                                                         />
-                                                        <Text className="text-[8px] text-amber-500 font-inter-bold">
+                                                        <Text className="text-[8px] text-primary font-inter-bold">
                                                             {Math.round(downloadProgress * 100)}%
                                                         </Text>
                                                     </View>
                                                 </View>
                                             ) : isDownloaded ? (
-                                                <CheckCircle size={26} color="#f59e0b" />
+                                                <CheckCircle size={26} color="hsl(20.5 90.2% 48.2%)" />
                                             ) : (
-                                                <Download size={26} color="#f4f4f5" />
+                                                <Download size={26} color="hsl(60 9.1% 97.8%)" />
                                             )}
                                         </View>
                                         {/* <Text className={`font-inter-medium text-[10px] uppercase tracking-wider ${isDownloaded || isDownloading ? 'text-amber-500' : 'text-zinc-500'}`}>
@@ -556,8 +556,8 @@ export default function PlayerScreen() {
                                         className="flex-1 items-center justify-center p-2 opacity-80 active:opacity-100"
                                         onPress={handleSleepTimerPress}
                                     >
-                                        <Clock size={26} color={sleepTimerRemaining ? "#f59e0b" : "#f4f4f5"} className="mb-1.5" />
-                                        <Text className={`font-inter-medium text-[10px] uppercase tracking-wider ${sleepTimerRemaining ? 'text-amber-500' : 'text-zinc-500'}`}>
+                                        <Clock size={26} color={sleepTimerRemaining ? "hsl(20.5 90.2% 48.2%)" : "hsl(60 9.1% 97.8%)"} className="mb-1.5" />
+                                        <Text className={`font-inter-medium text-[10px] uppercase tracking-wider ${sleepTimerRemaining ? 'text-primary' : 'text-muted-foreground'}`}>
                                             {formatSleepTimer(sleepTimerRemaining)}
                                         </Text>
                                     </TouchableOpacity>

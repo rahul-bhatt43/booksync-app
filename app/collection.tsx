@@ -63,21 +63,21 @@ export default function CollectionScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-zinc-950" edges={['top']}>
+        <SafeAreaView className="flex-1 bg-background" edges={['top']}>
             {/* Header */}
             <View className="px-6 pt-4 pb-2 flex-row items-center">
                 <TouchableOpacity
                     onPress={() => router.back()}
-                    className="p-2 -ml-2 mr-3 bg-zinc-900 rounded-full border border-zinc-800"
+                    className="p-2 -ml-2 mr-3 bg-secondary rounded-full border border-border"
                     activeOpacity={0.7}
                 >
-                    <ChevronLeft size={24} color="#f4f4f5" />
+                    <ChevronLeft size={24} color="hsl(60 9.1% 97.8%)" />
                 </TouchableOpacity>
                 <View className="flex-1">
-                    <Text className="text-zinc-400 font-inter-medium text-xs uppercase tracking-wider mb-0.5">
+                    <Text className="text-muted-foreground font-inter-medium text-xs uppercase tracking-wider mb-0.5">
                         {getTitlePrefix()}
                     </Text>
-                    <Text className="text-white font-inter-bold text-2xl tracking-tight" numberOfLines={1}>
+                    <Text className="text-foreground font-inter-bold text-2xl tracking-tight" numberOfLines={1}>
                         {name || 'Unknown'}
                     </Text>
                 </View>
@@ -88,7 +88,7 @@ export default function CollectionScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 40, paddingTop: 16 }}
                 refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" colors={['#f59e0b']} />
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="hsl(20.5 90.2% 48.2%)" colors={['hsl(20.5 90.2% 48.2%)']} />
                 }
             >
                 <Animated.View entering={FadeInDown.delay(100).duration(600).springify()} className="px-6">
@@ -118,7 +118,7 @@ export default function CollectionScreen() {
                         </View>
                     ) : (
                         <View className="mt-20 items-center justify-center">
-                            <Text className="text-zinc-500 font-inter-medium text-lg">No audiobooks found.</Text>
+                            <Text className="text-muted-foreground font-inter-medium text-lg">No audiobooks found.</Text>
                         </View>
                     )}
                 </Animated.View>
