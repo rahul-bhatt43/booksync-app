@@ -51,7 +51,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     const isPlayingRef = useRef(false);
     const currentTrackRef = useRef<TrackParams | null>(null);
     const soundRef = useRef<Audio.Sound | null>(null);
-    const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const sleepTimerEndRef = useRef<number | null>(null);
+    const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
         positionRef.current = position;
@@ -63,8 +64,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         return () => {
-            if (sleepTimerRef.current) {
-                clearInterval(sleepTimerRef.current);
+            if (sleepIntervalRef.current) {
+                clearInterval(sleepIntervalRef.current);
             }
         };
     }, []);
@@ -98,11 +99,35 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         };
     }, [sound]);
 
-    const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
+    const onPlaybackStatusUpdate = useCallback(async (status: AVPlaybackStatus) => {
         if (status.isLoaded) {
             setDuration(status.durationMillis ?? 0);
             setPosition(status.positionMillis ?? 0);
             setIsPlaying(status.isPlaying);
+
+            // Check Sleep Timer
+            if (sleepTimerEndRef.current !== null) {
+                const now = Date.now();
+                if (now >= sleepTimerEndRef.current) {
+                    console.log('Sleep timer reached! Pausing playback...');
+                    sleepTimerEndRef.current = null;
+                    setSleepTimerRemaining(null);
+                    if (sleepIntervalRef.current) {
+                        clearInterval(sleepIntervalRef.current);
+                        sleepIntervalRef.current = null;
+                    }
+
+                    if (soundRef.current) {
+                        try {
+                            await soundRef.current.pauseAsync();
+                            setIsPlaying(false);
+                            await syncHistory();
+                        } catch (e) {
+                            console.error("Error pausing from sleep timer in loop", e);
+                        }
+                    }
+                }
+            }
 
             if (status.didJustFinish) {
                 setIsPlaying(false);
@@ -172,44 +197,36 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     };
 
     const setSleepTimer = (minutes: number | null) => {
-        if (sleepTimerRef.current) {
-            clearInterval(sleepTimerRef.current);
-            sleepTimerRef.current = null;
+        if (sleepIntervalRef.current) {
+            clearInterval(sleepIntervalRef.current);
+            sleepIntervalRef.current = null;
         }
 
         if (minutes === null) {
+            sleepTimerEndRef.current = null;
             setSleepTimerRemaining(null);
             return;
         }
 
-        let secondsRemaining = minutes * 60;
-        setSleepTimerRemaining(secondsRemaining);
+        const endTime = Date.now() + minutes * 60 * 1000;
+        sleepTimerEndRef.current = endTime;
 
-        sleepTimerRef.current = setInterval(async () => {
-            secondsRemaining -= 1;
-            setSleepTimerRemaining(secondsRemaining);
+        const updateRemaining = () => {
+            const now = Date.now();
+            const remaining = Math.max(0, Math.round((endTime - now) / 1000));
+            setSleepTimerRemaining(remaining);
 
-            if (secondsRemaining <= 0) {
-                if (sleepTimerRef.current) {
-                    clearInterval(sleepTimerRef.current);
-                    sleepTimerRef.current = null;
-                }
-                setSleepTimerRemaining(null);
-
-                if (soundRef.current) {
-                    try {
-                        const status = await soundRef.current.getStatusAsync();
-                        if (status.isLoaded) {
-                            await soundRef.current.pauseAsync();
-                            setIsPlaying(false);
-                            await syncHistory();
-                        }
-                    } catch (e) {
-                        console.error("Error in sleep timer", e);
-                    }
+            if (remaining <= 0) {
+                if (sleepIntervalRef.current) {
+                    clearInterval(sleepIntervalRef.current);
+                    sleepIntervalRef.current = null;
                 }
             }
-        }, 1000);
+        };
+
+        updateRemaining();
+        // Keep the interval for UI updates when the app is active
+        sleepIntervalRef.current = setInterval(updateRemaining, 1000);
     };
 
     const playTrack = async () => {

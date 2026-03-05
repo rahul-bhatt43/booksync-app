@@ -300,6 +300,8 @@ export default function PlayerScreen() {
 
     const handleSleepTimerPress = () => {
         if (sleepTimerRemaining === null) {
+            setSleepTimer(1); // 1 minute for testing
+        } else if (sleepTimerRemaining <= 1 * 60) {
             setSleepTimer(15);
         } else if (sleepTimerRemaining <= 15 * 60) {
             setSleepTimer(30);
