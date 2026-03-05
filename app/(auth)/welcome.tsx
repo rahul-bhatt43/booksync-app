@@ -49,9 +49,9 @@ function AudioBar({ targetHeight, delay }: { targetHeight: number; delay: number
 }
 
 const FEATURES = [
-    { icon: '📚', label: '50,000+ Titles' },
+    { icon: '📚', label: '40+ Titles' },
     { icon: '🎧', label: 'Offline Mode' },
-    { icon: '🔄', label: 'Cross-device Sync' },
+    { icon: '🔥', label: 'Best Sellers' },
 ];
 
 export default function WelcomeScreen() {

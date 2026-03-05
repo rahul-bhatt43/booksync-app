@@ -60,7 +60,7 @@ export default function SignupScreen() {
                 {/* Form */}
                 <View className="flex-1 space-y-4">
                     {/* Name Field */}
-                    <Animated.View entering={FadeInUp.delay(200).duration(600).springify()}>
+                    <Animated.View entering={FadeInUp.delay(200).duration(600).springify()} className="mb-5">
                         <Text className="text-muted-foreground text-xs mb-2 font-inter-medium ml-1 tracking-wide uppercase">Full Name</Text>
                         <View
                             className={`flex-row items-center rounded-2xl px-4 py-4 border ${focusedField === 'name'
@@ -83,7 +83,7 @@ export default function SignupScreen() {
                     </Animated.View>
 
                     {/* Email Field */}
-                    <Animated.View entering={FadeInUp.delay(300).duration(600).springify()}>
+                    <Animated.View entering={FadeInUp.delay(300).duration(600).springify()} className="mb-5">
                         <Text className="text-muted-foreground text-xs mb-2 font-inter-medium ml-1 tracking-wide uppercase">Email</Text>
                         <View
                             className={`flex-row items-center rounded-2xl px-4 py-4 border ${focusedField === 'email'
@@ -107,7 +107,7 @@ export default function SignupScreen() {
                     </Animated.View>
 
                     {/* Password Field */}
-                    <Animated.View entering={FadeInUp.delay(400).duration(600).springify()}>
+                    <Animated.View entering={FadeInUp.delay(400).duration(600).springify()} className="mb-5">
                         <Text className="text-muted-foreground text-xs mb-2 font-inter-medium ml-1 tracking-wide uppercase">Password</Text>
                         <View
                             className={`flex-row items-center rounded-2xl px-4 py-4 border ${focusedField === 'password'
